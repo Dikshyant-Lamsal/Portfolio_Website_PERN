@@ -1,0 +1,158 @@
+/* client/src/pages/Login.css
+   ─────────────────────────────────────────────────────────────────────────────
+   Styles for the Login page.
+   All colours reference the CSS variables defined in index.css so dark/light
+   theme switching works automatically — no extra JS needed.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── Full-viewport shell — centres the card ─────────────────────────────── */
+.login-shell {
+    min-height: 100dvh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    transition: background 0.35s ease;
+}
+
+/* ── Login card ──────────────────────────────────────────────────────────── */
+.login-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem 2rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    transition: background 0.35s ease, border-color 0.35s ease;
+}
+
+/* ── Header block ────────────────────────────────────────────────────────── */
+.login-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+/* Matches .admin-heading exactly */
+.login-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    transition: color 0.35s ease;
+}
+
+/* Matches .admin-heading-bracket exactly */
+.login-bracket {
+    color: var(--accent);
+    transition: color 0.35s ease;
+}
+
+.login-subheading {
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    transition: color 0.35s ease;
+}
+
+/* ── Form layout ─────────────────────────────────────────────────────────── */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.login-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+/* ── Label ───────────────────────────────────────────────────────────────── */
+.login-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    transition: color 0.35s ease;
+}
+
+/* ── Input ───────────────────────────────────────────────────────────────── */
+.login-input {
+    width: 100%;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.6rem 0.85rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        background 0.35s ease,
+        box-shadow 0.2s ease;
+}
+
+.login-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.login-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ── Error message ───────────────────────────────────────────────────────── */
+.login-error {
+    font-size: 0.78rem;
+    color: var(--status-error);
+    background: color-mix(in srgb, var(--status-error) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--status-error) 30%, transparent);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    transition: color 0.35s ease;
+}
+
+/* ── Submit button — matches .admin-add-btn ──────────────────────────────── */
+.login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    padding: 0.65rem 1.2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    margin-top: 0.25rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.login-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px var(--accent-glow);
+}
+
+.login-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+    .login-card {
+        padding: 2rem 1.4rem;
+    }
+}

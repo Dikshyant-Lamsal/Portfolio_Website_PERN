@@ -38,6 +38,8 @@ app.use('/api/projects', projectsRouter)
 const contactRouter = require('./routes/contact')
 app.use('/api/contact', contactRouter)
 
+const authRouter = require('./routes/auth')     
+app.use('/api/auth', authRouter)                  
 // ── 404 catch-all ─────────────────────────────────────────────────────────
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' })

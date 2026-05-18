@@ -1,0 +1,233 @@
+/* client/src/components/ProjectForm.css */
+
+.pf-wrap {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: background 0.35s ease, border-color 0.35s ease;
+}
+
+/* ── Header ── */
+.pf-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    transition: border-color 0.35s ease;
+}
+
+.pf-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    transition: color 0.35s ease;
+}
+
+.pf-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 1rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.pf-close:hover {
+    color: var(--status-error);
+    background: var(--bg-raised);
+}
+
+/* ── Form ── */
+.pf-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    padding: 1.5rem;
+}
+
+/* ── Field ── */
+.pf-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.pf-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    transition: color 0.35s ease;
+}
+
+.pf-field--err .pf-label {
+    color: var(--status-error);
+}
+
+/* ── Input / Textarea ── */
+.pf-input {
+    width: 100%;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    outline: none;
+    resize: none;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease,
+        color 0.35s ease;
+}
+
+.pf-input::placeholder {
+    color: var(--text-muted);
+}
+
+.pf-input:focus {
+    border-color: var(--accent);
+    background: var(--bg-surface);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.pf-input--err {
+    border-color: var(--status-error);
+}
+
+.pf-input--err:focus {
+    box-shadow: 0 0 0 3px rgba(240, 112, 106, 0.15);
+}
+
+.pf-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pf-textarea {
+    min-height: 110px;
+}
+
+.pf-error {
+    font-size: 0.72rem;
+    color: var(--status-error);
+}
+
+/* ── Two-column row ── */
+.pf-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* ── Checkbox ── */
+.pf-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+}
+
+.pf-checkbox input {
+    accent-color: var(--accent);
+    width: 15px;
+    height: 15px;
+}
+
+.pf-checkbox-label {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    transition: color 0.35s ease;
+}
+
+/* ── API error ── */
+.pf-api-error {
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
+    background: rgba(240, 112, 106, 0.08);
+    border: 1px solid var(--status-error);
+    color: var(--status-error);
+    font-size: 0.78rem;
+}
+
+/* ── Actions ── */
+.pf-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.pf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.65rem 1.4rem;
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.25s ease;
+}
+
+.pf-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.pf-btn--primary {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.pf-btn--primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px var(--accent-glow);
+}
+
+.pf-btn--ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+}
+
+.pf-btn--ghost:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-glow);
+}
+
+/* Spinner inside button */
+.pf-spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    border-top-color: var(--bg);
+    border-radius: 50%;
+    animation: pf-spin 0.7s linear infinite;
+}
+
+@keyframes pf-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Responsive ── */
+@media (max-width: 560px) {
+    .pf-row {
+        grid-template-columns: 1fr;
+    }
+
+    .pf-form {
+        padding: 1.1rem;
+    }
+}

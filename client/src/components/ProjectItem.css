@@ -1,0 +1,188 @@
+/* client/src/components/ProjectItem.css */
+
+.pi-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition:
+        background 0.35s ease,
+        border-color 0.25s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.pi-wrap:hover {
+    border-color: var(--accent);
+    transform: translateX(3px);
+    box-shadow: 0 4px 18px var(--accent-glow);
+}
+
+/* ── Info side ── */
+.pi-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+    /* allows text truncation */
+}
+
+.pi-top {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.pi-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.35s ease;
+}
+
+.pi-featured-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-glow);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+    white-space: nowrap;
+    transition: color 0.35s ease, background 0.35s ease;
+}
+
+.pi-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.pi-tech-badge {
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.1rem 0.45rem;
+    transition: color 0.35s ease, background 0.35s ease;
+}
+
+/* ── Actions side ── */
+.pi-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.pi-confirm {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    animation: fadeIn 0.15s ease;
+}
+
+.pi-confirm-text {
+    font-size: 0.75rem;
+    color: var(--status-error);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ── Buttons ── */
+.pi-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.pi-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pi-btn--edit {
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+.pi-btn--edit:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-glow);
+}
+
+.pi-btn--danger-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+}
+
+.pi-btn--danger-outline:hover {
+    border-color: var(--status-error);
+    color: var(--status-error);
+    background: rgba(240, 112, 106, 0.08);
+}
+
+.pi-btn--danger {
+    background: var(--status-error);
+    color: #fff;
+}
+
+.pi-btn--danger:hover:not(:disabled) {
+    opacity: 0.88;
+}
+
+.pi-btn--ghost {
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+}
+
+.pi-btn--ghost:hover {
+    color: var(--text-primary);
+}
+
+/* ── Responsive ── */
+@media (max-width: 520px) {
+    .pi-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pi-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}

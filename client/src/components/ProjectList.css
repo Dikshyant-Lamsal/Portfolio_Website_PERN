@@ -1,0 +1,58 @@
+/* client/src/components/ProjectList.css */
+
+.pl-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    animation: fadeUp 0.5s ease both;
+}
+
+/* Loading / error / empty shared states */
+.pl-state {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 1.5rem 0;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    transition: color 0.35s ease;
+}
+
+.pl-state--error {
+    color: var(--status-error);
+}
+
+.pl-state--empty {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Spinner */
+.pl-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: pl-spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pl-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
