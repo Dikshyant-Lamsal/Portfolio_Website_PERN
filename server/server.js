@@ -5,10 +5,10 @@
 require('dotenv').config()
 
 const express = require('express')
-const cors    = require('cors')
-const pool    = require('./config/db') // establishes DB connection on import
+const cors = require('cors')
+const pool = require('./config/db') // establishes DB connection on import
 
-const app  = express()
+const app = express()
 const PORT = process.env.PORT || 5000
 
 // ── Middleware ────────────────────────────────────────────────────────────
@@ -33,6 +33,10 @@ app.get('/api/test', (req, res) => {
 // Projects CRUD routes — all paths under /api/projects
 const projectsRouter = require('./routes/projects')
 app.use('/api/projects', projectsRouter)
+
+// Contact form route — POST /api/contact
+const contactRouter = require('./routes/contact')
+app.use('/api/contact', contactRouter)
 
 // ── 404 catch-all ─────────────────────────────────────────────────────────
 app.use((req, res) => {

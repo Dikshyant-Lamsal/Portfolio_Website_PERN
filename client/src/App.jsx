@@ -1,14 +1,21 @@
 // client/src/App.jsx
-// Root component — handles theme state, API test fetch, and layout
+// Root component — owns theme state and composes all sections.
+// Theme toggle is passed as a prop to Navbar so it lives in one place.
+
 import { useState, useEffect } from 'react'
+import Navbar from './components/Navbar'
+import Hero from './components/Hero'
+import About from './components/About'
+import Skills from './components/Skills'
 import Projects from './components/Projects'
+import Contact from './components/Contact'
 
 export default function App() {
   // ── Theme State ──────────────────────────────────────────────────────────
-  // Default is dark mode. Toggle flips between 'dark' and 'light'.
+  // 'dark' by default. Passed down to Navbar which renders the toggle button.
   const [theme, setTheme] = useState('dark')
 
-  // Apply the theme as a data-attribute on <html> so CSS variables respond
+  // Write the theme to <html data-theme="..."> so CSS variables respond
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
@@ -16,87 +23,34 @@ export default function App() {
   const toggleTheme = () =>
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
 
-  // ── API Test State ────────────────────────────────────────────────────────
-  const [apiMessage, setApiMessage] = useState('')
-  const [apiStatus, setApiStatus] = useState('idle') // idle | loading | ok | error
-
-  // Fetch the backend health-check on mount
-  useEffect(() => {
-    setApiStatus('loading')
-    fetch('/api/test')
-      .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        return res.json()
-      })
-      .then(data => {
-        setApiMessage(data.message)
-        setApiStatus('ok')
-      })
-      .catch(() => {
-        setApiMessage('Could not reach backend.')
-        setApiStatus('error')
-      })
-  }, [])
-
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="app-shell">
+    <>
+      {/* Fixed navbar — receives theme state and toggle handler */}
+      <Navbar theme={theme} toggleTheme={toggleTheme} />
 
-      {/* ── Top Bar ── */}
-      <header className="topbar">
-        <span className="logo">
-          <span className="logo-bracket">&lt;</span>
-          portfolio
-          <span className="logo-bracket">/&gt;</span>
-        </span>
+      {/* Page sections — each has an id for smooth-scroll nav links */}
+      <main>
+        <Hero />
 
-        {/* Theme toggle button */}
-        <button
-          className="theme-toggle"
-          onClick={toggleTheme}
-          aria-label="Toggle colour theme"
-          title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-        >
-          <span className="toggle-track">
-            <span className="toggle-thumb" />
-          </span>
-          <span className="toggle-label">
-            {theme === 'dark' ? '☀ Light' : '☽ Dark'}
-          </span>
-        </button>
-      </header>
+        <About />
 
-      {/* ── Hero ── */}
-      <main className="hero">
-        <p className="hero-eyebrow">Hello, world —</p>
-        <h1 className="hero-title">
-          Dikshyant Lamsal<br />
-        </h1>
-        <p className="hero-sub">
-          PERN stack · React · Node · PostgreSQL 
-        </p>
+        <Skills />
 
-        {/* ── Backend Status Card ── */}
-        <div className={`status-card status-${apiStatus}`}>
-          <span className="status-dot" aria-hidden="true" />
-          <span className="status-text">
-            {apiStatus === 'loading' && 'Connecting to backend…'}
-            {apiStatus === 'ok'      && `✓ ${apiMessage}`}
-            {apiStatus === 'error'   && `✗ ${apiMessage}`}
-            {apiStatus === 'idle'    && '—'}
-          </span>
-        </div>
+        {/* Projects section — id used by navbar scroll link */}
+        <section id="projects" className="section-wrapper">
+          <Projects />
+        </section>
+
+        {/* Placeholder — filled in next sprint */}
+        <Contact />
       </main>
 
-      {/* ── Projects Section ── */}
-      <Projects />
-
-      {/* ── Footer ── */}
       <footer className="footer">
-        <span>Built with the PERN stack</span>
+        <span>Dikshyant Lamsal</span>
         <span className="footer-dot">·</span>
-        <span>Ready to customise</span>
+        <span>Built with the PERN stack</span>
       </footer>
-    </div>
+    </>
   )
 }

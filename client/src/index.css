@@ -71,180 +71,27 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── App Shell ──────────────────────────────────────────────────────────── */
-.app-shell {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  min-height: 100dvh;
-  max-width: 900px;
+/* ── App Layout ─────────────────────────────────────────────────────────── */
+/* No max-width constraint here — each section controls its own width.
+   Navbar and Hero are full-width; content sections are centred inside. */
+
+/* Section wrapper — centres content, adds breathing room */
+.section-wrapper {
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 5rem 2rem;
 }
 
-/* ── Top Bar ────────────────────────────────────────────────────────────── */
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.6rem 0;
-  border-bottom: 1px solid var(--border);
-  transition: border-color 0.35s ease;
-}
-
-/* Logo */
-.logo {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.25rem;
-  letter-spacing: 0.01em;
-  color: var(--text-primary);
-  transition: color 0.35s ease;
-}
-
-.logo-bracket {
-  color: var(--accent);
-  transition: color 0.35s ease;
-}
-
-/* ── Theme Toggle ───────────────────────────────────────────────────────── */
-.theme-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0.4rem 0.85rem 0.4rem 0.5rem;
-  cursor: pointer;
-  color: var(--text-secondary);
-  font-family: 'DM Mono', monospace;
-  font-size: 0.78rem;
-  letter-spacing: 0.03em;
-  transition:
-    border-color 0.25s ease,
-    color 0.25s ease,
-    background 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-.theme-toggle:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-glow);
-  box-shadow: 0 0 12px var(--accent-glow);
-}
-
-/* Pill track */
-.toggle-track {
-  width: 28px;
-  height: 16px;
-  background: var(--toggle-bg);
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  position: relative;
-  display: inline-block;
-  transition: background 0.35s ease;
-}
-
-/* Sliding thumb */
-.toggle-thumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--toggle-thumb);
-  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.35s ease;
-}
-
-/* In light mode, slide thumb to the right */
-[data-theme="light"] .toggle-thumb {
-  transform: translateX(12px);
-}
-
-.toggle-label {
-  transition: color 0.35s ease;
-}
-
-/* ── Hero ───────────────────────────────────────────────────────────────── */
-.hero {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 1.1rem;
-  padding: 5rem 0 4rem;
-}
-
-.hero-eyebrow {
-  font-size: 0.8rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+/* Placeholder — shown for sections not yet built */
+.section-placeholder {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
   color: var(--text-muted);
-  transition: color 0.35s ease;
-}
-
-.hero-title {
-  font-family: 'DM Serif Display', serif;
-  font-size: clamp(2.8rem, 7vw, 5rem);
-  line-height: 1.05;
-  color: var(--text-primary);
-  transition: color 0.35s ease;
-}
-
-.hero-accent {
-  color: var(--accent);
-  font-style: italic;
-  transition: color 0.35s ease;
-}
-
-.hero-sub {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  letter-spacing: 0.06em;
-  transition: color 0.35s ease;
-}
-
-/* ── Status Card ────────────────────────────────────────────────────────── */
-.status-card {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.65rem;
-  margin-top: 0.5rem;
-  padding: 0.65rem 1.1rem;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-  box-shadow: var(--shadow);
-  transition:
-    background 0.35s ease,
-    border-color 0.35s ease,
-    box-shadow 0.35s ease;
-  max-width: fit-content;
-}
-
-/* Pulsing indicator dot */
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.status-ok    .status-dot { background: var(--status-ok);      animation: pulse 2s infinite; }
-.status-error .status-dot { background: var(--status-error);   }
-.status-loading .status-dot { background: var(--status-loading); animation: pulse 0.8s infinite; }
-.status-idle  .status-dot { background: var(--text-muted);     }
-
-.status-ok    .status-text { color: var(--status-ok);      }
-.status-error .status-text { color: var(--status-error);   }
-.status-loading .status-text { color: var(--status-loading); }
-.status-idle  .status-text { color: var(--text-muted);     }
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.35; }
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  border-top: 1px solid var(--border);
+  transition: color 0.35s ease, border-color 0.35s ease;
 }
 
 /* ── Footer ─────────────────────────────────────────────────────────────── */

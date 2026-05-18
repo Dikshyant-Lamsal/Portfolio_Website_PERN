@@ -1,119 +1,145 @@
-# PERN Portfolio — Foundation Setup
+# PERN Portfolio
 
-A beginner-friendly full-stack portfolio built with **PostgreSQL · Express · React · Node**.
+Full-stack developer portfolio built using:
 
-```
-pern-portfolio/
-├── client/                   ← React + Vite frontend
-│   ├── index.html            ← Vite HTML entry point
-│   ├── vite.config.js        ← Vite config + dev proxy
-│   ├── package.json
-│   └── src/
-│       ├── main.jsx          ← React root mount
-│       ├── App.jsx           ← App shell + theme toggle + API fetch
-│       └── index.css         ← CSS variables, dark/light themes, global styles
-│
-└── server/                   ← Express + Node.js backend
-    ├── server.js             ← Express app entry point
-    ├── package.json
-    ├── .env.example          ← Template — copy to .env and fill in values
-    └── config/
-        └── db.js             ← PostgreSQL pool (pg package)
-```
-
----
-
-## Quick Start
-
-### 1. Clone / enter the project
-
-```bash
-cd pern-portfolio
-```
-
-### 2. Set up the backend
-
-```bash
-cd server
-npm install
-
-# Create your .env from the template
-cp .env.example .env
-# Then open .env and paste in your Neon DATABASE_URL
-```
-
-### 3. Set up the frontend
-
-```bash
-cd ../client
-npm install
-```
-
----
-
-## Run in Development
-
-Open **two terminals**:
-
-**Terminal 1 — Backend**
-```bash
-cd server
-npm run dev        # nodemon watches for changes → http://localhost:5000
-```
-
-**Terminal 2 — Frontend**
-```bash
-cd client
-npm run dev        # Vite dev server → http://localhost:5173
-```
-
-Visit [http://localhost:5173](http://localhost:5173).  
-The status card should show **✓ Backend running** when Express is up.
-
----
-
-## API Routes
-
-| Method | Path        | Description          |
-|--------|-------------|----------------------|
-| GET    | /api/test   | Health check         |
-
----
-
-## Environment Variables (server/.env)
-
-| Key            | Description                              |
-|----------------|------------------------------------------|
-| `PORT`         | Express port (default 5000)              |
-| `DATABASE_URL` | Neon PostgreSQL connection string        |
-| `CORS_ORIGIN`  | Allowed frontend origin                  |
-| `NODE_ENV`     | `development` or `production`            |
-
----
-
-## Theme System
-
-- **Default**: dark mode
-- Toggle via the button in the top-right corner
-- Theme is stored in React `useState`; applied as `data-theme` on `<html>`
-- All colours are CSS variables — add new tokens in `index.css` under `:root`
-- Transitions are smooth (0.35 s ease) across all colour properties
+- React + Vite
+- Express + Node.js
+- PostgreSQL (Neon)
 
 ---
 
 ## Tech Stack
 
-| Layer     | Technology              | Hosting  |
-|-----------|-------------------------|----------|
-| Frontend  | React 18 + Vite 5       | Vercel   |
-| Backend   | Express 4 + Node 18+    | Render   |
-| Database  | PostgreSQL (Neon)        | Neon     |
+| Layer | Technology |
+|---|---|
+| Frontend | React + Vite |
+| Backend | Express + Node.js |
+| Database | PostgreSQL |
+| Hosting | Vercel + Render + Neon |
 
 ---
 
-## Next Steps (not included in this foundation)
+## Project Structure
 
-- Add database tables (`CREATE TABLE` migrations)
-- Add portfolio section components (Projects, Skills, Contact)
-- Add API routes for each section
-- Configure Vercel + Render deployment
+```text
+pern-portfolio/
+├── client/
+│   ├── src/
+│   ├── package.json
+│   └── vite.config.js
+│
+├── server/
+│   ├── config/
+│   ├── routes/
+│   ├── server.js
+│   ├── package.json
+│   └── .env
+│
+└── README.md
+```
+
+---
+
+## Local Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone <your-repo-url>
+cd pern-portfolio
+```
+
+---
+
+## Backend Setup
+
+```bash
+cd server
+npm install
+```
+
+Create:
+
+```text
+server/.env
+```
+
+Add:
+
+```env
+PORT=5000
+DATABASE_URL=your_neon_database_url
+CORS_ORIGIN=http://localhost:5173
+NODE_ENV=development
+```
+
+Run backend:
+
+```bash
+npm run dev
+```
+
+Backend runs on:
+
+```text
+http://localhost:5000
+```
+
+---
+
+## Frontend Setup
+
+Open another terminal:
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+Frontend runs on:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## Features
+
+- Responsive layout
+- Dark/light theme toggle
+- React frontend
+- Express backend API
+- PostgreSQL database integration
+- REST API architecture
+- Modern developer portfolio structure
+
+---
+
+## Environment Variables
+
+| Variable | Description |
+|---|---|
+| PORT | Express server port |
+| DATABASE_URL | Neon PostgreSQL connection string |
+| CORS_ORIGIN | Allowed frontend URL |
+| NODE_ENV | development / production |
+
+---
+
+## API Routes
+
+| Method | Route | Description |
+|---|---|---|
+| GET | /api/test | Backend health check |
+
+---
+
+## Deployment
+
+| Service | Platform |
+|---|---|
+| Frontend | Vercel |
+| Backend | Render |
+| Database | Neon |
