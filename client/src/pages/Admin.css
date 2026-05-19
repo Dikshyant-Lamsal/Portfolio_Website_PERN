@@ -180,3 +180,15 @@
     border-color: var(--status-error);
     background: color-mix(in srgb, var(--status-error) 8%, transparent);
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   APPEND to the bottom of client/src/pages/Admin.css
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── Section divider (between Profile Settings and All Projects) ── */
+.admin-section-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0.5rem 0;
+    transition: background 0.35s ease;
+}

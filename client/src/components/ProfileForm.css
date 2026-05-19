@@ -1,0 +1,370 @@
+/* client/src/components/ProfileForm.css
+   ─────────────────────────────────────────────────────────────────────────────
+   Styles for the ProfileForm admin panel.
+   Follows the same conventions as ProjectForm.css and Admin.css.
+   All colours use CSS variables from index.css — theme-aware automatically.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── Outer wrapper ───────────────────────────────────────────────────────── */
+.prf-wrap {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    transition: background 0.35s ease, border-color 0.35s ease;
+}
+
+/* ── Section header ──────────────────────────────────────────────────────── */
+.prf-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+}
+
+.prf-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    transition: color 0.35s ease;
+}
+
+.prf-hint {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    transition: color 0.35s ease;
+}
+
+/* ── Form layout ─────────────────────────────────────────────────────────── */
+.prf-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+/* Two-column row */
+.prf-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 600px) {
+    .prf-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Single field */
+.prf-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+/* Half-width field (standalone, not in a row) */
+.prf-field--half {
+    max-width: 50%;
+}
+
+@media (max-width: 600px) {
+    .prf-field--half {
+        max-width: 100%;
+    }
+}
+
+/* ── Label ───────────────────────────────────────────────────────────────── */
+.prf-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    transition: color 0.35s ease;
+}
+
+.prf-label-hint {
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ── Input / Textarea ────────────────────────────────────────────────────── */
+.prf-input {
+    width: 100%;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.58rem 0.85rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.83rem;
+    color: var(--text-primary);
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        background 0.35s ease,
+        box-shadow 0.2s ease;
+    resize: vertical;
+}
+
+.prf-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.prf-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.prf-textarea {
+    min-height: 9rem;
+}
+
+.prf-textarea--sm {
+    min-height: 5rem;
+}
+
+/* ── Divider ─────────────────────────────────────────────────────────────── */
+.prf-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.5rem 0 0.25rem;
+}
+
+.prf-divider::before,
+.prf-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    transition: background 0.35s ease;
+}
+
+.prf-divider-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+    transition: color 0.35s ease;
+}
+
+/* ── Save error ──────────────────────────────────────────────────────────── */
+.prf-error {
+    font-size: 0.78rem;
+    color: var(--status-error);
+    background: color-mix(in srgb, var(--status-error) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--status-error) 30%, transparent);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+}
+
+/* ── Actions row ─────────────────────────────────────────────────────────── */
+.prf-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Save button — matches .admin-add-btn */
+.prf-btn--save {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    padding: 0.58rem 1.4rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.prf-btn--save:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px var(--accent-glow);
+}
+
+.prf-btn--save:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ✓ Saved confirmation badge */
+.prf-saved-badge {
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    color: var(--status-ok);
+    animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Loading / fetch-error states ────────────────────────────────────────── */
+.prf-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 1.5rem 0;
+}
+
+.prf-fetch-error {
+    color: var(--status-error);
+    font-size: 0.85rem;
+    padding: 1rem 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   APPEND these styles to the bottom of client/src/components/ProjectForm.css
+   Do NOT replace the file — paste this block at the end.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── Image upload section ────────────────────────────────────────────────── */
+.pf-image-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* ── Preview thumbnail ───────────────────────────────────────────────────── */
+.pf-preview-wrap {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 280px;
+}
+
+.pf-preview-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    display: block;
+    transition: border-color 0.25s ease;
+}
+
+/* "✓ Uploaded" badge shown when Cloudinary URL is confirmed */
+.pf-preview-badge {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.07em;
+    color: var(--status-ok);
+    background: color-mix(in srgb, var(--status-ok) 12%, var(--bg-surface));
+    border: 1px solid color-mix(in srgb, var(--status-ok) 35%, transparent);
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+}
+
+/* ── File picker row ─────────────────────────────────────────────────────── */
+.pf-upload-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+/* Hide the native file input; style the label as a button instead */
+.pf-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+
+.pf-file-label {
+    position: relative;
+    cursor: pointer;
+}
+
+.pf-file-btn {
+    display: inline-block;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.48rem 0.9rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.pf-file-label:hover .pf-file-btn {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-glow);
+}
+
+/* Upload button — appears after a file is chosen */
+.pf-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 7px;
+    padding: 0.48rem 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.pf-upload-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 16px var(--accent-glow);
+}
+
+.pf-upload-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Upload error text */
+.pf-upload-error {
+    font-size: 0.76rem;
+    color: var(--status-error);
+}
+
+/* URL fallback input — slightly de-emphasised */
+.pf-image-url-input {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}

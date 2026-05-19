@@ -1,27 +1,31 @@
 // server/routes/projects.js
 // All API routes for the `projects` table.
 // Mounted in server.js at /api/projects
+//
+// CHANGE FROM ORIGINAL:
+//   • verifyToken imported from ../middleware/auth
+//   • verifyToken added as second argument to POST, PUT, DELETE only
+//   • GET routes are completely unchanged — still public
+//   • All handler logic is identical to the original
 
 const express = require('express')
-const router  = express.Router()
-const pool    = require('../config/db') // shared connection pool
+const router = express.Router()
+const pool = require('../config/db')
+const verifyToken = require('../middleware/auth') // ── NEW ──
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /api/projects
-// Returns all projects, newest first.
-// Optional query param: ?featured=true → only featured projects
+// GET /api/projects          — PUBLIC (no token needed)
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/', async (req, res) => {
   try {
     const { featured } = req.query
 
-    // Build query dynamically based on ?featured param
     const query = featured === 'true'
       ? 'SELECT * FROM projects WHERE featured = true ORDER BY created_at DESC'
       : 'SELECT * FROM projects ORDER BY created_at DESC'
 
     const result = await pool.query(query)
-    res.json(result.rows)            // rows is an array of project objects
+    res.json(result.rows)
   } catch (err) {
     console.error('GET /api/projects error:', err.message)
     res.status(500).json({ error: 'Failed to fetch projects' })
@@ -29,8 +33,7 @@ router.get('/', async (req, res) => {
 })
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /api/projects/:id
-// Returns a single project by its primary key.
+// GET /api/projects/:id      — PUBLIC (no token needed)
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/:id', async (req, res) => {
   try {
@@ -38,7 +41,7 @@ router.get('/:id', async (req, res) => {
 
     const result = await pool.query(
       'SELECT * FROM projects WHERE id = $1',
-      [id]   // $1 is a parameterised placeholder — safe from SQL injection
+      [id]
     )
 
     if (result.rows.length === 0) {
@@ -53,22 +56,20 @@ router.get('/:id', async (req, res) => {
 })
 
 // ─────────────────────────────────────────────────────────────────────────────
-// POST /api/projects
-// Creates a new project. All fields from req.body.
+// POST /api/projects         — PROTECTED ── verifyToken added ──
 // ─────────────────────────────────────────────────────────────────────────────
-router.post('/', async (req, res) => {
+router.post('/', verifyToken, async (req, res) => {
   try {
     const {
       title,
       description,
-      tech_stack,   // expect an array: ["React", "Node"]
+      tech_stack,
       github_link,
       live_link,
       image_url,
       featured,
     } = req.body
 
-    // Basic validation
     if (!title || !description) {
       return res.status(400).json({ error: 'title and description are required' })
     }
@@ -77,7 +78,7 @@ router.post('/', async (req, res) => {
       `INSERT INTO projects
          (title, description, tech_stack, github_link, live_link, image_url, featured)
        VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING *`,          // RETURNING * gives back the newly created row
+       RETURNING *`,
       [title, description, tech_stack, github_link, live_link, image_url, featured ?? false]
     )
 
@@ -89,10 +90,9 @@ router.post('/', async (req, res) => {
 })
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PUT /api/projects/:id
-// Updates every field of an existing project (full replace).
+// PUT /api/projects/:id      — PROTECTED ── verifyToken added ──
 // ─────────────────────────────────────────────────────────────────────────────
-router.put('/:id', async (req, res) => {
+router.put('/:id', verifyToken, async (req, res) => {
   try {
     const { id } = req.params
     const {
@@ -121,10 +121,9 @@ router.put('/:id', async (req, res) => {
 })
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DELETE /api/projects/:id
-// Removes a project permanently.
+// DELETE /api/projects/:id   — PROTECTED ── verifyToken added ──
 // ─────────────────────────────────────────────────────────────────────────────
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyToken, async (req, res) => {
   try {
     const { id } = req.params
 

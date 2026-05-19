@@ -231,3 +231,128 @@
         padding: 1.1rem;
     }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Image upload UI
+   ───────────────────────────────────────────────────────────────────────── */
+
+.pf-image-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* ── Preview thumbnail ── */
+.pf-preview-wrap {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 280px;
+}
+
+.pf-preview-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    display: block;
+    transition: border-color 0.25s ease;
+}
+
+.pf-preview-badge {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.07em;
+    color: var(--status-ok);
+    background: color-mix(in srgb, var(--status-ok) 12%, var(--bg-surface));
+    border: 1px solid color-mix(in srgb, var(--status-ok) 35%, transparent);
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+}
+
+/* ── File picker row ── */
+.pf-upload-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+/* Hide the native file input; the styled label acts as the button */
+.pf-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+
+.pf-file-label {
+    position: relative;
+    cursor: pointer;
+}
+
+.pf-file-btn {
+    display: inline-block;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.48rem 0.9rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.pf-file-label:hover .pf-file-btn {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-glow);
+}
+
+/* Upload button — appears after a file is chosen */
+.pf-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 7px;
+    padding: 0.48rem 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.pf-upload-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 16px var(--accent-glow);
+}
+
+.pf-upload-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.pf-upload-error {
+    font-size: 0.76rem;
+    color: var(--status-error);
+}
+
+/* URL fallback input — de-emphasised */
+.pf-image-url-input {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}

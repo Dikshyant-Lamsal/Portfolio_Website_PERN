@@ -1,38 +1,26 @@
 // client/src/pages/Admin.jsx
-// ─────────────────────────────────────────────────────────────────────────────
-// CHANGE FROM ORIGINAL: one prop added (onLogout) + one logout button in the
-// topbar. Everything else — state, form, list — is completely unchanged.
-// ─────────────────────────────────────────────────────────────────────────────
-// Dashboard page — accessible at /#/admin (hash routing, no react-router).
-// Orchestrates ProjectForm and ProjectList.
-// Owns: editingProject state, refreshKey counter, form visibility.
+//
+// CHANGES FROM ORIGINAL:
+//   • Imports ProfileForm
+//   • <ProfileForm /> rendered as a new section above the projects list
+//   • A section divider added between Profile Settings and All Projects
+//   • Everything else — state, topbar, ProjectForm, ProjectList — unchanged
 
 import { useState } from 'react'
 import ProjectForm from '../components/ProjectForm'
 import ProjectList from '../components/ProjectList'
+import ProfileForm from '../components/ProfileForm'   // ── NEW ──
 import './Admin.css'
 
-// ── NEW: accepts onLogout in addition to the existing onGoHome ──
 export default function Admin({ onGoHome, onLogout }) {
-    // null = create mode, project object = edit mode
     const [editingProject, setEditingProject] = useState(null)
-    // true = form panel is open
     const [formOpen, setFormOpen] = useState(false)
-    // Incrementing this number re-triggers ProjectList's useEffect fetch
     const [refreshKey, setRefreshKey] = useState(0)
 
-    const openCreate = () => {
-        setEditingProject(null)
-        setFormOpen(true)
-    }
-    const openEdit = (project) => {
-        setEditingProject(project)
-        setFormOpen(true)
-    }
-    const closeForm = () => {
-        setFormOpen(false)
-        setEditingProject(null)
-    }
+    const openCreate = () => { setEditingProject(null); setFormOpen(true) }
+    const openEdit = (project) => { setEditingProject(project); setFormOpen(true) }
+    const closeForm = () => { setFormOpen(false); setEditingProject(null) }
+
     const handleFormSuccess = () => {
         closeForm()
         setRefreshKey(prev => prev + 1)
@@ -40,6 +28,7 @@ export default function Admin({ onGoHome, onLogout }) {
 
     return (
         <div className="admin-shell">
+
             {/* ── Top bar ── */}
             <header className="admin-topbar">
                 <div className="admin-topbar-left">
@@ -53,28 +42,25 @@ export default function Admin({ onGoHome, onLogout }) {
                     </h1>
                 </div>
 
-                {/* ── NEW: right side now has both buttons ── */}
                 <div className="admin-topbar-right">
-                    <button
-                        className="admin-add-btn"
-                        onClick={openCreate}
-                        aria-label="Add new project"
-                    >
+                    <button className="admin-add-btn" onClick={openCreate} aria-label="Add new project">
                         + Add Project
                     </button>
-                    {/* Logout button — calls App.jsx handler which clears localStorage */}
-                    <button
-                        className="admin-logout-btn"
-                        onClick={onLogout}
-                        aria-label="Log out"
-                    >
+                    <button className="admin-logout-btn" onClick={onLogout} aria-label="Log out">
                         Log out
                     </button>
                 </div>
             </header>
 
             <main className="admin-main">
-                {/* ── Form panel (shown when open) ── */}
+
+                {/* ── NEW: Profile Settings panel ── */}
+                <ProfileForm />
+
+                {/* ── Divider between profile and projects ── */}
+                <div className="admin-section-divider" aria-hidden="true" />
+
+                {/* ── Project form panel (shown when open) ── */}
                 {formOpen && (
                     <div className="admin-form-panel">
                         <ProjectForm
@@ -93,11 +79,9 @@ export default function Admin({ onGoHome, onLogout }) {
                             Click Edit to modify · Delete requires confirmation
                         </span>
                     </div>
-                    <ProjectList
-                        refreshKey={refreshKey}
-                        onEdit={openEdit}
-                    />
+                    <ProjectList refreshKey={refreshKey} onEdit={openEdit} />
                 </section>
+
             </main>
         </div>
     )

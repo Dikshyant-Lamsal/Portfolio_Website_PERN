@@ -1,6 +1,11 @@
 // client/src/components/ProjectItem.jsx
 // Displays one project row in the admin list.
 // Handles its own delete confirmation state.
+//
+// CHANGE FROM ORIGINAL:
+//   • handleConfirmDelete reads localStorage for the token
+//   • Authorization: Bearer <token> header added to the DELETE fetch call
+//   • Everything else — UI, confirmation flow, state — is identical
 
 import { useState } from 'react'
 import './ProjectItem.css'
@@ -14,12 +19,22 @@ export default function ProjectItem({ project, onEdit, onDeleted }) {
 
     const handleConfirmDelete = async () => {
         setDeleteStatus('deleting')
+
+        // ── NEW: read token from localStorage ───────────────────────────────
+        // Same token stored by Login.jsx — must be attached to DELETE requests
+        // so the backend middleware allows the operation.
+        const token = localStorage.getItem('adminToken')
+
         try {
-            const res = await fetch(`/api/projects/${project.id}`, { method: 'DELETE' })
+            const res = await fetch(`/api/projects/${project.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,   // ── NEW ──
+                },
+            })
             if (!res.ok) throw new Error()
             onDeleted()  // tell parent to refresh list
         } catch {
-            // On failure just reset — simple approach for a no-auth admin
             setDeleteStatus('idle')
             alert('Failed to delete project. Please try again.')
         }
@@ -27,7 +42,6 @@ export default function ProjectItem({ project, onEdit, onDeleted }) {
 
     return (
         <div className="pi-wrap">
-
             {/* ── Left: info ── */}
             <div className="pi-info">
                 <div className="pi-top">
@@ -36,7 +50,6 @@ export default function ProjectItem({ project, onEdit, onDeleted }) {
                         <span className="pi-featured-badge">Featured</span>
                     )}
                 </div>
-
                 {/* Tech badges */}
                 {project.tech_stack && project.tech_stack.length > 0 && (
                     <div className="pi-tech">
@@ -75,7 +88,6 @@ export default function ProjectItem({ project, onEdit, onDeleted }) {
                     </>
                 )}
             </div>
-
         </div>
     )
 }
