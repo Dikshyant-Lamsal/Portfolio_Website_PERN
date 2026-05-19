@@ -1,15 +1,10 @@
 // client/src/components/ProjectForm.jsx
 // Handles both CREATE (no project prop) and EDIT (project prop passed in).
 // Calls onSuccess() after a successful submit so the parent can refresh.
-//   • imageFile state — holds the selected File object before upload
-//   • imagePreview state — object URL for the local preview thumbnail
-//   • uploadStatus state — idle | uploading | error
-//   • handleImageChange — validates file type/size client-side, sets preview
-//   • handleImageUpload — POSTs to /api/upload, auto-fills image_url on success
-//   • Image field now has: file picker + Upload button + preview thumbnail
-//   • All existing form logic (validation, submit, auth header) unchanged
+// CHANGE: all fetch paths now use API_URL from config/api.js
 
 import { useState, useEffect } from 'react'
+import API_URL from '../config/api'
 import './ProjectForm.css'
 
 const EMPTY_FORM = {
@@ -27,16 +22,13 @@ export default function ProjectForm({ project, onSuccess, onCancel }) {
 
     const [form, setForm] = useState(EMPTY_FORM)
     const [errors, setErrors] = useState({})
-    const [status, setStatus] = useState('idle')   // idle | loading | error
+    const [status, setStatus] = useState('idle')
     const [apiError, setApiError] = useState('')
-
-    // ── Image upload state ── NEW ────────────────────────────────────────────
-    const [imageFile, setImageFile] = useState(null)   // File object
-    const [imagePreview, setImagePreview] = useState('')     // local object URL
-    const [uploadStatus, setUploadStatus] = useState('idle') // idle | uploading | error
+    const [imageFile, setImageFile] = useState(null)
+    const [imagePreview, setImagePreview] = useState('')
+    const [uploadStatus, setUploadStatus] = useState('idle')
     const [uploadError, setUploadError] = useState('')
 
-    // Pre-fill form when editing
     useEffect(() => {
         if (project) {
             setForm({
@@ -48,7 +40,6 @@ export default function ProjectForm({ project, onSuccess, onCancel }) {
                 image_url: project.image_url || '',
                 featured: project.featured || false,
             })
-            // Show existing image as preview when editing
             if (project.image_url) setImagePreview(project.image_url)
         }
     }, [project])
@@ -59,76 +50,53 @@ export default function ProjectForm({ project, onSuccess, onCancel }) {
         if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }))
     }
 
-    // ── Image file selected ── NEW ───────────────────────────────────────────
-    // Validates client-side before anything is uploaded.
     const handleImageChange = (e) => {
         const file = e.target.files[0]
         if (!file) return
-
         setUploadError('')
-
-        // Client-side type check
         const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
         if (!allowed.includes(file.type)) {
             setUploadError('Only jpg, png, webp, or gif files are allowed.')
             return
         }
-
-        // Client-side size check (5 MB)
         if (file.size > 5 * 1024 * 1024) {
             setUploadError('File is too large. Maximum size is 5 MB.')
             return
         }
-
         setImageFile(file)
-
-        // Create a local object URL for the preview thumbnail.
-        // This shows immediately without waiting for the Cloudinary upload.
-        const localUrl = URL.createObjectURL(file)
-        setImagePreview(localUrl)
+        setImagePreview(URL.createObjectURL(file))
     }
 
-    // ── Upload to Cloudinary via backend ── NEW ──────────────────────────────
     const handleImageUpload = async () => {
         if (!imageFile) return
-
         setUploadStatus('uploading')
         setUploadError('')
-
         const token = localStorage.getItem('adminToken')
         const formData = new FormData()
-        formData.append('image', imageFile)  // field name must match upload.single('image')
-
+        formData.append('image', imageFile)
         try {
-            const res = await fetch('/api/upload', {
+            const res = await fetch(`${API_URL}/api/upload`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
-                // Do NOT set Content-Type manually — the browser sets it automatically
-                // with the correct multipart boundary when sending FormData.
                 body: formData,
             })
-
-            const data = await res.json()
-
+            const text = await res.text()
+            const data = text ? JSON.parse(text) : {}
             if (!res.ok) {
                 setUploadError(data.error || 'Upload failed.')
                 setUploadStatus('error')
                 return
             }
-
-            // Auto-fill the image_url field with the returned Cloudinary URL
             setForm(prev => ({ ...prev, image_url: data.imageUrl }))
-            setImagePreview(data.imageUrl)  // swap local preview for the hosted URL
-            setImageFile(null)              // clear the pending file
+            setImagePreview(data.imageUrl)
+            setImageFile(null)
             setUploadStatus('idle')
-
         } catch {
             setUploadError('Could not reach the server.')
             setUploadStatus('error')
         }
     }
 
-    // ── Validation ───────────────────────────────────────────────────────────
     const validate = () => {
         const next = {}
         if (!form.title.trim()) next.title = 'Title is required'
@@ -137,7 +105,6 @@ export default function ProjectForm({ project, onSuccess, onCancel }) {
         return next
     }
 
-    // ── Submit — unchanged logic, auth header already in place ───────────────
     const handleSubmit = async (e) => {
         e.preventDefault()
         const validationErrors = validate()
@@ -145,19 +112,15 @@ export default function ProjectForm({ project, onSuccess, onCancel }) {
             setErrors(validationErrors)
             return
         }
-
         setStatus('loading')
         setApiError('')
-
         const payload = {
             ...form,
             tech_stack: form.tech_stack.split(',').map(t => t.trim()).filter(Boolean),
         }
-
-        const url = isEditing ? `/api/projects/${project.id}` : '/api/projects'
+        const url = isEditing ? `${API_URL}/api/projects/${project.id}` : `${API_URL}/api/projects`
         const method = isEditing ? 'PUT' : 'POST'
         const token = localStorage.getItem('adminToken')
-
         try {
             const res = await fetch(url, {
                 method,
@@ -167,17 +130,15 @@ export default function ProjectForm({ project, onSuccess, onCancel }) {
                 },
                 body: JSON.stringify(payload),
             })
-            const data = await res.json()
-
+            const text = await res.text()
+            const data = text ? JSON.parse(text) : {}
             if (!res.ok) {
                 setApiError(data.error || 'Something went wrong.')
                 setStatus('error')
                 return
             }
-
             setStatus('idle')
             onSuccess()
-
         } catch {
             setApiError('Could not reach the server.')
             setStatus('error')
@@ -189,8 +150,6 @@ export default function ProjectForm({ project, onSuccess, onCancel }) {
 
     return (
         <div className="pf-wrap">
-
-            {/* ── Header ── */}
             <div className="pf-header">
                 <h3 className="pf-title">
                     {isEditing ? `Editing — ${project.title}` : 'Add New Project'}
@@ -200,7 +159,6 @@ export default function ProjectForm({ project, onSuccess, onCancel }) {
                 )}
             </div>
 
-            {/* ── Form ── */}
             <form className="pf-form" onSubmit={handleSubmit} noValidate>
 
                 <FormField label="Title *" error={errors.title}>
@@ -244,26 +202,16 @@ export default function ProjectForm({ project, onSuccess, onCancel }) {
                     </FormField>
                 </div>
 
-                {/* ── Image field — NEW upload UI ── */}
                 <FormField label="Project Image">
                     <div className="pf-image-section">
-
-                        {/* ── Preview thumbnail ── */}
                         {imagePreview && (
                             <div className="pf-preview-wrap">
-                                <img
-                                    src={imagePreview}
-                                    alt="Project preview"
-                                    className="pf-preview-img"
-                                />
-                                {/* Show a "hosted" badge once the URL is a Cloudinary URL */}
+                                <img src={imagePreview} alt="Project preview" className="pf-preview-img" />
                                 {form.image_url && form.image_url === imagePreview && (
                                     <span className="pf-preview-badge">✓ Uploaded</span>
                                 )}
                             </div>
                         )}
-
-                        {/* ── File picker + upload button ── */}
                         <div className="pf-upload-row">
                             <label className="pf-file-label" aria-label="Choose image file">
                                 <input
@@ -277,8 +225,6 @@ export default function ProjectForm({ project, onSuccess, onCancel }) {
                                     {imageFile ? imageFile.name : 'Choose image…'}
                                 </span>
                             </label>
-
-                            {/* Upload button — only shown when a new file is selected */}
                             {imageFile && (
                                 <button
                                     type="button"
@@ -293,17 +239,12 @@ export default function ProjectForm({ project, onSuccess, onCancel }) {
                                 </button>
                             )}
                         </div>
-
-                        {/* Upload error */}
                         {uploadError && (
                             <span className="pf-upload-error" role="alert">{uploadError}</span>
                         )}
-
-                        {/* Manual URL fallback — still editable, auto-filled after upload */}
                         <input
                             className="pf-input pf-image-url-input"
-                            name="image_url"
-                            value={form.image_url}
+                            name="image_url" value={form.image_url}
                             onChange={handleChange}
                             placeholder="Or paste an image URL directly"
                             disabled={loading}
@@ -311,7 +252,6 @@ export default function ProjectForm({ project, onSuccess, onCancel }) {
                     </div>
                 </FormField>
 
-                {/* Featured checkbox */}
                 <label className="pf-checkbox">
                     <input
                         type="checkbox" name="featured" checked={form.featured}
@@ -320,12 +260,10 @@ export default function ProjectForm({ project, onSuccess, onCancel }) {
                     <span className="pf-checkbox-label">Mark as Featured</span>
                 </label>
 
-                {/* API error banner */}
                 {status === 'error' && apiError && (
                     <div className="pf-api-error" role="alert">{apiError}</div>
                 )}
 
-                {/* Action buttons */}
                 <div className="pf-actions">
                     <button type="submit" className="pf-btn pf-btn--primary" disabled={loading || uploading}>
                         {loading

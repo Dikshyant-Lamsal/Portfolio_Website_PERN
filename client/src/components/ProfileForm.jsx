@@ -1,13 +1,9 @@
 // client/src/components/ProfileForm.jsx
-// ─────────────────────────────────────────────────────────────────────────────
-// Admin dashboard section — fetches the profile on mount, lets the admin
-// edit all fields, and saves via PUT /api/profile.
-//
-// This is a self-contained panel: it owns its own fetch + submit logic.
-// It does NOT need props from Admin.jsx except nothing — it's standalone.
-// ─────────────────────────────────────────────────────────────────────────────
+// Admin dashboard section — fetches profile on mount, saves via PUT /api/profile.
+// CHANGE: all fetch paths now use API_URL from config/api.js
 
 import { useState, useEffect } from 'react'
+import API_URL from '../config/api'
 import './ProfileForm.css'
 
 const EMPTY = {
@@ -27,19 +23,17 @@ const EMPTY = {
 
 export default function ProfileForm() {
     const [form, setForm] = useState(EMPTY)
-    const [fetchStatus, setFetchStatus] = useState('loading') // loading | ready | error
-    const [saveStatus, setSaveStatus] = useState('idle')    // idle | saving | saved | error
+    const [fetchStatus, setFetchStatus] = useState('loading')
+    const [saveStatus, setSaveStatus] = useState('idle')
     const [saveError, setSaveError] = useState('')
 
-    // ── Fetch current profile on mount ───────────────────────────────────────
     useEffect(() => {
-        fetch('/api/profile')
+        fetch(`${API_URL}/api/profile`)
             .then(res => {
                 if (!res.ok) throw new Error(`HTTP ${res.status}`)
                 return res.json()
             })
             .then(data => {
-                // Fill every field — replace null/undefined with empty string
                 setForm({
                     full_name: data.full_name || '',
                     role_title: data.role_title || '',
@@ -62,11 +56,9 @@ export default function ProfileForm() {
     const handleChange = (e) => {
         const { name, value } = e.target
         setForm(prev => ({ ...prev, [name]: value }))
-        // Clear saved banner when the admin starts typing again
         if (saveStatus === 'saved') setSaveStatus('idle')
     }
 
-    // ── Save handler ─────────────────────────────────────────────────────────
     const handleSave = async (e) => {
         e.preventDefault()
         setSaveStatus('saving')
@@ -75,7 +67,7 @@ export default function ProfileForm() {
         const token = localStorage.getItem('adminToken')
 
         try {
-            const res = await fetch('/api/profile', {
+            const res = await fetch(`${API_URL}/api/profile`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -100,7 +92,6 @@ export default function ProfileForm() {
         }
     }
 
-    // ── Loading / error states ────────────────────────────────────────────────
     if (fetchStatus === 'loading') {
         return (
             <div className="prf-loading">
@@ -122,17 +113,13 @@ export default function ProfileForm() {
     return (
         <div className="prf-wrap">
 
-            {/* ── Section header ── */}
             <div className="prf-header">
                 <h2 className="prf-title">Profile Settings</h2>
-                <span className="prf-hint">
-                    Changes here update your live portfolio instantly
-                </span>
+                <span className="prf-hint">Changes here update your live portfolio instantly</span>
             </div>
 
             <form className="prf-form" onSubmit={handleSave}>
 
-                {/* ── Row 1: Name + Role ── */}
                 <div className="prf-row">
                     <div className="prf-field">
                         <label className="prf-label" htmlFor="prf-full_name">Full Name *</label>
@@ -154,7 +141,6 @@ export default function ProfileForm() {
                     </div>
                 </div>
 
-                {/* ── Hero subtitle ── */}
                 <div className="prf-field">
                     <label className="prf-label" htmlFor="prf-hero_subtitle">Hero Subtitle</label>
                     <textarea
@@ -165,7 +151,6 @@ export default function ProfileForm() {
                     />
                 </div>
 
-                {/* ── About text ── */}
                 <div className="prf-field">
                     <label className="prf-label" htmlFor="prf-about_text">
                         About Text
@@ -179,7 +164,6 @@ export default function ProfileForm() {
                     />
                 </div>
 
-                {/* ── Row 2: Email + Location ── */}
                 <div className="prf-row">
                     <div className="prf-field">
                         <label className="prf-label" htmlFor="prf-email">Email *</label>
@@ -201,11 +185,8 @@ export default function ProfileForm() {
                     </div>
                 </div>
 
-                {/* ── Availability ── */}
                 <div className="prf-field prf-field--half">
-                    <label className="prf-label" htmlFor="prf-availability_status">
-                        Availability Status
-                    </label>
+                    <label className="prf-label" htmlFor="prf-availability_status">Availability Status</label>
                     <input
                         id="prf-availability_status" className="prf-input"
                         name="availability_status" value={form.availability_status}
@@ -214,12 +195,10 @@ export default function ProfileForm() {
                     />
                 </div>
 
-                {/* ── Divider ── */}
                 <div className="prf-divider">
                     <span className="prf-divider-label">Links</span>
                 </div>
 
-                {/* ── Row 3: GitHub + LinkedIn ── */}
                 <div className="prf-row">
                     <div className="prf-field">
                         <label className="prf-label" htmlFor="prf-github_url">GitHub URL</label>
@@ -241,7 +220,6 @@ export default function ProfileForm() {
                     </div>
                 </div>
 
-                {/* ── Row 4: LeetCode + Resume ── */}
                 <div className="prf-row">
                     <div className="prf-field">
                         <label className="prf-label" htmlFor="prf-leetcode_url">LeetCode URL</label>
@@ -263,11 +241,8 @@ export default function ProfileForm() {
                     </div>
                 </div>
 
-                {/* ── Profile image ── */}
                 <div className="prf-field">
-                    <label className="prf-label" htmlFor="prf-profile_image_url">
-                        Profile Image URL
-                    </label>
+                    <label className="prf-label" htmlFor="prf-profile_image_url">Profile Image URL</label>
                     <input
                         id="prf-profile_image_url" className="prf-input"
                         name="profile_image_url" value={form.profile_image_url}
@@ -276,12 +251,10 @@ export default function ProfileForm() {
                     />
                 </div>
 
-                {/* ── Save error ── */}
                 {saveStatus === 'error' && saveError && (
                     <div className="prf-error" role="alert">{saveError}</div>
                 )}
 
-                {/* ── Actions ── */}
                 <div className="prf-actions">
                     <button type="submit" className="prf-btn prf-btn--save" disabled={saving}>
                         {saving

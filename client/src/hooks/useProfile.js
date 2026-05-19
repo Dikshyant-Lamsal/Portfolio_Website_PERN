@@ -1,20 +1,11 @@
 // client/src/hooks/useProfile.js
-// ─────────────────────────────────────────────────────────────────────────────
 // Custom hook — fetches the profile from GET /api/profile once on mount.
-// Used by Hero, About, and Contact so they all share the same data
-// without prop-drilling or Context API.
+// Used by Hero, About, and Contact so they all share the same data.
 //
-// Returns: { profile, loading, error }
-//
-//   profile — the profile object from the database, or null while loading
-//   loading — true until the first fetch completes
-//   error   — error message string if fetch failed, otherwise null
-//
-// Usage:
-//   const { profile, loading, error } = useProfile()
-// ─────────────────────────────────────────────────────────────────────────────
+// CHANGE: fetch path now uses API_URL from config/api.js
 
 import { useState, useEffect } from 'react'
+import API_URL from '../config/api'
 
 export default function useProfile() {
     const [profile, setProfile] = useState(null)
@@ -22,8 +13,7 @@ export default function useProfile() {
     const [error, setError] = useState(null)
 
     useEffect(() => {
-        // Only runs once — on component mount
-        fetch('/api/profile')
+        fetch(`${API_URL}/api/profile`)
             .then(res => {
                 if (!res.ok) throw new Error(`HTTP ${res.status}`)
                 return res.json()
@@ -37,7 +27,7 @@ export default function useProfile() {
                 setError(err.message)
                 setLoading(false)
             })
-    }, []) // empty array = run once on mount only
+    }, [])
 
     return { profile, loading, error }
 }

@@ -1,8 +1,9 @@
 // client/src/components/ProjectList.jsx
 // Fetches all projects from GET /api/projects and renders them as ProjectItems.
-// Accepts a `refreshKey` prop — incrementing it triggers a re-fetch.
+// CHANGE: fetch paths now use API_URL from config/api.js
 
 import { useState, useEffect } from 'react'
+import API_URL from '../config/api'
 import ProjectItem from './ProjectItem'
 import './ProjectList.css'
 
@@ -11,12 +12,10 @@ export default function ProjectList({ refreshKey, onEdit }) {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
-    // Re-runs whenever refreshKey changes (parent increments it after create/edit/delete)
     useEffect(() => {
         setLoading(true)
         setError(null)
-
-        fetch('/api/projects')
+        fetch(`${API_URL}/api/projects`)
             .then(res => {
                 if (!res.ok) throw new Error(`HTTP ${res.status}`)
                 return res.json()
@@ -31,10 +30,9 @@ export default function ProjectList({ refreshKey, onEdit }) {
             })
     }, [refreshKey])
 
-    // After a delete, just re-fetch the whole list (simple & reliable)
     const handleDeleted = () => {
         setLoading(true)
-        fetch('/api/projects')
+        fetch(`${API_URL}/api/projects`)
             .then(res => res.json())
             .then(data => { setProjects(data); setLoading(false) })
             .catch(() => setLoading(false))

@@ -1,12 +1,8 @@
 // client/src/components/Contact.jsx
-//
-// CHANGES FROM ORIGINAL:
-//   • Imports useProfile hook
-//   • email, github_url, linkedin_url replaced with profile data
-//   • Contact form logic (handleChange, validate, handleSubmit) unchanged
-//   • Layout and CSS classes unchanged
+// CHANGE: fetch path now uses API_URL from config/api.js
 
 import { useState } from 'react'
+import API_URL from '../config/api'
 import useProfile from '../hooks/useProfile'
 import './Contact.css'
 
@@ -20,7 +16,6 @@ export default function Contact() {
     const [status, setStatus] = useState('idle')
     const [apiError, setApiError] = useState('')
 
-    // ── Derive contact info from profile ──────────────────────────────────
     const email = profile?.email || ''
     const githubUrl = profile?.github_url || ''
     const linkedinUrl = profile?.linkedin_url || ''
@@ -54,7 +49,7 @@ export default function Contact() {
         setStatus('loading')
         setApiError('')
         try {
-            const res = await fetch('/api/contact', {
+            const res = await fetch(`${API_URL}/api/contact`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(form),
@@ -78,7 +73,6 @@ export default function Contact() {
     return (
         <section className="contact" id="contact">
 
-            {/* ── Section header ── */}
             <div className="contact-header">
                 <span className="section-eyebrow">Get in touch</span>
                 <h2 className="section-title">Contact Me</h2>
@@ -87,13 +81,11 @@ export default function Contact() {
 
             <div className="contact-grid">
 
-                {/* ── Left: intro + contact details (now dynamic) ── */}
                 <div className="contact-intro">
                     <p className="contact-intro-text">
                         Have a project in mind, a question, or just want to say hi?
                         Fill out the form and I'll get back to you as soon as possible.
                     </p>
-
                     <div className="contact-details">
                         {email && (
                             <a href={`mailto:${email}`} className="contact-detail-link">
@@ -102,23 +94,13 @@ export default function Contact() {
                             </a>
                         )}
                         {githubUrl && (
-                            <a
-                                href={githubUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="contact-detail-link"
-                            >
+                            <a href={githubUrl} target="_blank" rel="noopener noreferrer" className="contact-detail-link">
                                 <span className="contact-detail-icon" aria-hidden="true">⌥</span>
                                 {githubUrl.replace('https://', '')}
                             </a>
                         )}
                         {linkedinUrl && (
-                            <a
-                                href={linkedinUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="contact-detail-link"
-                            >
+                            <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" className="contact-detail-link">
                                 <span className="contact-detail-icon" aria-hidden="true">in</span>
                                 LinkedIn Profile
                             </a>
@@ -126,7 +108,6 @@ export default function Contact() {
                     </div>
                 </div>
 
-                {/* ── Right: form or success message — logic unchanged ── */}
                 <div className="contact-form-wrap">
                     {status === 'success' ? (
                         <div className="contact-success">
