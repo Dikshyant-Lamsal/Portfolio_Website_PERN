@@ -1,8 +1,5 @@
-// client/src/hooks/useProjects.js
-// Custom hook that fetches the projects list from the backend.
-// Returns { projects, loading, error } — consumed by any component that needs it.
-
 import { useState, useEffect } from 'react'
+import API_URL from '../config/api'
 
 // Pass featured=true to only load featured projects, or false for all.
 export function useProjects({ featuredOnly = false } = {}) {
@@ -12,8 +9,8 @@ export function useProjects({ featuredOnly = false } = {}) {
 
     useEffect(() => {
         const url = featuredOnly
-            ? '/api/projects?featured=true'
-            : '/api/projects'
+            ? `${API_URL}/api/projects?featured=true`
+            : `${API_URL}/api/projects`
 
         setLoading(true)
         setError(null)
