@@ -1,0 +1,258 @@
+/* client/src/components/MessageList.css
+   Styles for the admin MessageList component.
+   All colours use CSS variables — works in both light and dark theme.      */
+
+/* ── Wrapper ── */
+.ml-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* ── Header row ── */
+.ml-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.ml-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    transition: color 0.35s ease;
+}
+
+.ml-count {
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    transition: color 0.35s ease;
+}
+
+/* ── Status (loading / error) ── */
+.ml-status {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 1rem 0;
+    transition: color 0.35s ease;
+}
+
+.ml-status--error {
+    color: var(--status-error);
+}
+
+.ml-retry {
+    background: none;
+    border: 1px solid var(--status-error);
+    border-radius: 6px;
+    color: var(--status-error);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    transition: background 0.2s ease;
+}
+
+.ml-retry:hover {
+    background: color-mix(in srgb, var(--status-error) 10%, transparent);
+}
+
+/* ── Empty state ── */
+.ml-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 3rem 1rem;
+    background: var(--bg-surface);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    text-align: center;
+    transition: background 0.35s ease, border-color 0.35s ease;
+}
+
+.ml-empty-icon {
+    font-size: 2rem;
+    opacity: 0.35;
+}
+
+.ml-empty-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    transition: color 0.35s ease;
+}
+
+.ml-empty-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    transition: color 0.35s ease;
+}
+
+/* ── Message list ── */
+.ml-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+/* ── Individual message card ── */
+.ml-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    transition:
+        background 0.35s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.ml-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+/* ── Meta row: sender info + date ── */
+.ml-card-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.ml-sender {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.ml-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    transition: color 0.35s ease;
+}
+
+.ml-email {
+    font-size: 0.78rem;
+    color: var(--accent);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.ml-email:hover {
+    opacity: 0.75;
+}
+
+.ml-date {
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    white-space: nowrap;
+    transition: color 0.35s ease;
+}
+
+/* ── Message body ── */
+.ml-message {
+    font-size: 0.85rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding: 0.75rem 1rem;
+    background: var(--bg-raised);
+    border-radius: 6px;
+    border-left: 2px solid var(--border);
+    transition:
+        color 0.35s ease,
+        background 0.35s ease,
+        border-color 0.35s ease;
+}
+
+/* ── Action row ── */
+.ml-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.ml-confirm-text {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    transition: color 0.35s ease;
+}
+
+/* ── Buttons ── */
+.ml-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    border-radius: 6px;
+    padding: 0.38rem 0.85rem;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+/* Outline-only delete (default state) */
+.ml-btn--danger-outline {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+}
+
+.ml-btn--danger-outline:hover {
+    border-color: var(--status-error);
+    color: var(--status-error);
+    background: color-mix(in srgb, var(--status-error) 8%, transparent);
+}
+
+/* Filled red (confirmation state) */
+.ml-btn--danger {
+    background: var(--status-error);
+    border: 1px solid var(--status-error);
+    color: #fff;
+}
+
+.ml-btn--danger:hover {
+    opacity: 0.85;
+}
+
+/* Ghost cancel */
+.ml-btn--ghost {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+}
+
+.ml-btn--ghost:hover {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+    .ml-card {
+        padding: 1rem 1.1rem;
+    }
+
+    .ml-card-meta {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .ml-date {
+        order: -1;
+    }
+}

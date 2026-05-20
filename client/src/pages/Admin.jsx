@@ -1,15 +1,15 @@
 // client/src/pages/Admin.jsx
 //
-// CHANGES FROM ORIGINAL:
-//   • Imports ProfileForm
-//   • <ProfileForm /> rendered as a new section above the projects list
-//   • A section divider added between Profile Settings and All Projects
-//   • Everything else — state, topbar, ProjectForm, ProjectList — unchanged
+// CHANGES FROM PREVIOUS VERSION:
+//   • Imports MessageList
+//   • Adds a second admin-section-divider + MessageList below ProjectList
+//   • Everything else — state, topbar, ProfileForm, ProjectForm, ProjectList — unchanged
 
 import { useState } from 'react'
 import ProjectForm from '../components/ProjectForm'
 import ProjectList from '../components/ProjectList'
-import ProfileForm from '../components/ProfileForm'   // ── NEW ──
+import ProfileForm from '../components/ProfileForm'
+import MessageList from '../components/MessageList'   // ── NEW ──
 import './Admin.css'
 
 export default function Admin({ onGoHome, onLogout }) {
@@ -41,7 +41,6 @@ export default function Admin({ onGoHome, onLogout }) {
                         <span className="admin-heading-bracket">/&gt;</span>
                     </h1>
                 </div>
-
                 <div className="admin-topbar-right">
                     <button className="admin-add-btn" onClick={openCreate} aria-label="Add new project">
                         + Add Project
@@ -54,13 +53,12 @@ export default function Admin({ onGoHome, onLogout }) {
 
             <main className="admin-main">
 
-                {/* ── NEW: Profile Settings panel ── */}
+                {/* ── Profile Settings ── */}
                 <ProfileForm />
 
-                {/* ── Divider between profile and projects ── */}
                 <div className="admin-section-divider" aria-hidden="true" />
 
-                {/* ── Project form panel (shown when open) ── */}
+                {/* ── Project form (shown when open) ── */}
                 {formOpen && (
                     <div className="admin-form-panel">
                         <ProjectForm
@@ -71,7 +69,7 @@ export default function Admin({ onGoHome, onLogout }) {
                     </div>
                 )}
 
-                {/* ── Project list ── */}
+                {/* ── All Projects ── */}
                 <section className="admin-list-section">
                     <div className="admin-list-header">
                         <h2 className="admin-list-title">All Projects</h2>
@@ -80,6 +78,13 @@ export default function Admin({ onGoHome, onLogout }) {
                         </span>
                     </div>
                     <ProjectList refreshKey={refreshKey} onEdit={openEdit} />
+                </section>
+
+                <div className="admin-section-divider" aria-hidden="true" />  {/* ── NEW ── */}
+
+                {/* ── Contact Messages ── NEW ── */}
+                <section className="admin-list-section">
+                    <MessageList />
                 </section>
 
             </main>

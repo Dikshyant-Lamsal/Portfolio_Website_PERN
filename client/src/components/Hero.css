@@ -1,6 +1,7 @@
-/* client/src/components/Hero.css */
-/* Full-viewport hero with animated entrance and decorative gradient blobs.
-   All colours reference CSS variables from index.css.                       */
+/* client/src/components/Hero.css
+   REDESIGN: removed large gradient blobs and glow effects.
+   Replaced with a clean, left-aligned layout with subtle accent line.
+   All class names preserved — layout + structure unchanged.               */
 
 /* ── Section wrapper ────────────────────────────────────────────────────── */
 .hero {
@@ -11,40 +12,39 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    /* keeps blobs from causing scroll */
-    padding: 7rem 2rem 4rem;
-    /* top pad clears the fixed navbar */
+    padding: 7rem 2rem 5rem;
 }
 
-/* ── Decorative gradient blobs ──────────────────────────────────────────── */
-/* These sit in the background and give depth without images */
+/* ── Decorative blobs — kept in DOM but made very subtle ── */
+/* They now act as a soft warm wash rather than neon glow   */
 .hero-blob {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.18;
+    filter: blur(100px);
+    opacity: 0.06;
+    /* much more subtle than before */
     pointer-events: none;
-    animation: blobFloat 8s ease-in-out infinite alternate;
+    animation: blobFloat 12s ease-in-out infinite alternate;
 }
 
 .hero-blob--1 {
-    width: 520px;
-    height: 520px;
+    width: 600px;
+    height: 600px;
     background: var(--accent);
-    top: -120px;
-    right: -100px;
-    animation-duration: 9s;
+    top: -160px;
+    right: -120px;
+    animation-duration: 14s;
 }
 
 .hero-blob--2 {
-    width: 380px;
-    height: 380px;
+    width: 400px;
+    height: 400px;
     background: var(--accent);
-    bottom: -80px;
-    left: -80px;
-    animation-duration: 11s;
-    animation-delay: -4s;
-    opacity: 0.10;
+    bottom: -100px;
+    left: -100px;
+    animation-duration: 18s;
+    animation-delay: -6s;
+    opacity: 0.04;
 }
 
 @keyframes blobFloat {
@@ -53,29 +53,26 @@
     }
 
     to {
-        transform: translate(30px, 20px) scale(1.06);
+        transform: translate(20px, 15px) scale(1.04);
     }
 }
 
 /* ── Content block ──────────────────────────────────────────────────────── */
 .hero-content {
     position: relative;
-    /* sits above blobs */
     z-index: 1;
-    max-width: 700px;
+    max-width: 680px;
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1.1rem;
-
-    /* Entrance animation — fades up on load */
-    animation: heroEnter 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: heroEnter 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes heroEnter {
     from {
         opacity: 0;
-        transform: translateY(28px);
+        transform: translateY(22px);
     }
 
     to {
@@ -89,60 +86,61 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-size: 0.78rem;
-    letter-spacing: 0.18em;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--text-muted);
-    animation: heroEnter 0.8s 0.05s cubic-bezier(0.22, 1, 0.36, 1) both;
-    transition: color 0.35s ease;
+    animation: heroEnter 0.7s 0.06s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition: color 0.3s ease;
 }
 
-/* Short horizontal rule before the eyebrow text */
 .eyebrow-line {
     display: inline-block;
-    width: 32px;
+    width: 28px;
     height: 1px;
     background: var(--accent);
     flex-shrink: 0;
-    transition: background 0.35s ease;
+    transition: background 0.3s ease;
 }
 
-/* ── Name heading ───────────────────────────────────────────────────────── */
+/* ── Name ───────────────────────────────────────────────────────────────── */
 .hero-name {
     font-family: 'DM Serif Display', serif;
-    font-size: clamp(3rem, 8vw, 5.5rem);
-    line-height: 1.0;
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    line-height: 1.02;
     color: var(--text-primary);
     letter-spacing: -0.02em;
-    animation: heroEnter 0.8s 0.12s cubic-bezier(0.22, 1, 0.36, 1) both;
-    transition: color 0.35s ease;
+    animation: heroEnter 0.7s 0.12s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition: color 0.3s ease;
 }
 
 /* ── Role subtitle ──────────────────────────────────────────────────────── */
 .hero-role {
     font-family: 'DM Serif Display', serif;
-    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    font-size: clamp(1.3rem, 3.5vw, 2.2rem);
     font-weight: 400;
     font-style: italic;
     color: var(--text-secondary);
-    line-height: 1.1;
-    animation: heroEnter 0.8s 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
-    transition: color 0.35s ease;
+    line-height: 1.2;
+    animation: heroEnter 0.7s 0.18s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition: color 0.3s ease;
 }
 
 .role-accent {
     color: var(--accent);
-    transition: color 0.35s ease;
+    font-style: normal;
+    transition: color 0.3s ease;
 }
 
-/* ── Bio paragraph ──────────────────────────────────────────────────────── */
+/* ── Bio ────────────────────────────────────────────────────────────────── */
 .hero-bio {
     max-width: 520px;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     line-height: 1.8;
     color: var(--text-secondary);
-    animation: heroEnter 0.8s 0.24s cubic-bezier(0.22, 1, 0.36, 1) both;
-    transition: color 0.35s ease;
+    animation: heroEnter 0.7s 0.24s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition: color 0.3s ease;
 }
 
 /* ── CTA buttons ────────────────────────────────────────────────────────── */
@@ -151,41 +149,42 @@
     flex-wrap: wrap;
     gap: 0.85rem;
     margin-top: 0.5rem;
-    animation: heroEnter 0.8s 0.30s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: heroEnter 0.7s 0.30s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .cta-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.6rem;
+    gap: 0.45rem;
+    padding: 0.72rem 1.5rem;
     border-radius: 8px;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.82rem;
-    letter-spacing: 0.06em;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
     cursor: pointer;
     border: none;
     transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.25s ease,
-        color 0.25s ease;
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.2s ease,
+        color 0.2s ease;
 }
 
-/* Primary — filled accent */
+/* Primary — solid accent fill */
 .cta-btn--primary {
     background: var(--accent);
-    color: var(--bg);
+    color: #fff;
+    box-shadow: 0 2px 8px var(--accent-glow);
 }
 
 .cta-btn--primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px var(--accent-glow);
+    box-shadow: 0 6px 20px var(--accent-glow);
 }
 
 .cta-arrow {
     display: inline-block;
-    transition: transform 0.2s ease;
+    transition: transform 0.18s ease;
 }
 
 .cta-btn--primary:hover .cta-arrow {
@@ -210,25 +209,25 @@
 .hero-socials {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 0.5rem;
-    animation: heroEnter 0.8s 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+    gap: 1.25rem;
+    margin-top: 0.25rem;
+    animation: heroEnter 0.7s 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .social-link {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    font-size: 0.78rem;
-    letter-spacing: 0.06em;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
     color: var(--text-muted);
     text-decoration: none;
-    padding: 0.4rem 0;
+    padding: 0.35rem 0;
     position: relative;
     transition: color 0.2s ease;
 }
 
-/* Underline slide-in */
 .social-link::after {
     content: '';
     position: absolute;
@@ -237,7 +236,7 @@
     width: 0;
     height: 1px;
     background: var(--accent);
-    transition: width 0.22s ease;
+    transition: width 0.2s ease;
 }
 
 .social-link:hover {
@@ -249,31 +248,27 @@
 }
 
 .social-link svg {
-    width: 16px;
-    height: 16px;
+    width: 15px;
+    height: 15px;
     flex-shrink: 0;
 }
 
 /* ── Scroll indicator ───────────────────────────────────────────────────── */
-/* Bouncing dot at the bottom of the hero */
 .scroll-indicator {
     position: absolute;
     bottom: 2.5rem;
     left: 50%;
     transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     animation: heroEnter 1s 0.6s ease both;
 }
 
 .scroll-dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
-    background: var(--accent);
-    animation: scrollBounce 1.8s ease-in-out infinite;
-    transition: background 0.35s ease;
+    background: var(--text-muted);
+    animation: scrollBounce 2s ease-in-out infinite;
+    transition: background 0.3s ease;
 }
 
 @keyframes scrollBounce {
@@ -286,48 +281,14 @@
 
     50% {
         transform: translateY(10px);
-        opacity: 1;
+        opacity: 0.9;
     }
 }
 
-/* ── Responsive ─────────────────────────────────────────────────────────── */
-@media (max-width: 600px) {
-    .hero {
-        padding: 6rem 1.2rem 3rem;
-        align-items: flex-start;
-    }
-
-    .hero-cta {
-        flex-direction: column;
-    }
-
-    .cta-btn {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .hero-blob--1 {
-        width: 300px;
-        height: 300px;
-        right: -60px;
-    }
-
-    .hero-blob--2 {
-        width: 220px;
-        height: 220px;
-    }
-}
-
-/* ─────────────────────────────────────────────────────────────────────────
-   APPEND to the bottom of client/src/components/Hero.css
-   These classes handle the loading placeholder shimmer.
-   ───────────────────────────────────────────────────────────────────────── */
-
-/* ── Loading placeholders ── */
-/* Shown while useProfile is fetching — prevents layout collapse */
+/* ── Loading placeholders ───────────────────────────────────────────────── */
 .hero-placeholder {
     display: inline-block;
-    width: 280px;
+    width: 260px;
     height: 1em;
     border-radius: 4px;
     background: linear-gradient(90deg,
@@ -340,7 +301,7 @@
 }
 
 .hero-placeholder--sm {
-    width: 180px;
+    width: 160px;
 }
 
 .hero-placeholder--bio {
@@ -356,5 +317,33 @@
 
     100% {
         background-position: -200% 0;
+    }
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+    .hero {
+        padding: 6rem 1.2rem 3.5rem;
+        align-items: flex-start;
+    }
+
+    .hero-cta {
+        flex-direction: column;
+    }
+
+    .cta-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hero-blob--1 {
+        width: 320px;
+        height: 320px;
+        right: -80px;
+    }
+
+    .hero-blob--2 {
+        width: 240px;
+        height: 240px;
     }
 }

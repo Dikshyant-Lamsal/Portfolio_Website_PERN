@@ -1,11 +1,13 @@
-/* client/src/pages/Admin.css */
+/* client/src/pages/Admin.css
+   REDESIGN: cleaner surface, softer borders, no glow effects.
+   All class names identical to previous version.                          */
 
 /* ── Full-page shell ── */
 .admin-shell {
     min-height: 100dvh;
     background: var(--bg);
     color: var(--text-primary);
-    transition: background 0.35s ease, color 0.35s ease;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 /* ── Top bar ── */
@@ -13,28 +15,36 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem 2rem;
+    padding: 0.85rem 2rem;
     border-bottom: 1px solid var(--border);
     background: var(--bg-surface);
+    box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
     z-index: 50;
-    transition: background 0.35s ease, border-color 0.35s ease;
+    transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .admin-topbar-left {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
+    gap: 1.1rem;
 }
 
+.admin-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+/* ── Back button ── */
 .admin-back {
     background: none;
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 0.38rem 0.85rem;
     font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     letter-spacing: 0.05em;
     color: var(--text-muted);
     cursor: pointer;
@@ -47,35 +57,57 @@
     background: var(--accent-glow);
 }
 
+/* ── Heading ── */
 .admin-heading {
     font-family: 'DM Serif Display', serif;
-    font-size: 1.3rem;
+    font-size: 1.25rem;
     color: var(--text-primary);
-    transition: color 0.35s ease;
+    transition: color 0.3s ease;
 }
 
 .admin-heading-bracket {
     color: var(--accent);
-    transition: color 0.35s ease;
+    transition: color 0.3s ease;
 }
 
-/* Add project button */
+/* ── Add project button ── */
 .admin-add-btn {
     background: var(--accent);
-    color: var(--bg);
+    color: #fff;
     border: none;
-    border-radius: 8px;
-    padding: 0.55rem 1.2rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.8rem;
-    letter-spacing: 0.05em;
+    border-radius: 7px;
+    padding: 0.5rem 1.1rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 4px var(--accent-glow);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
 }
 
 .admin-add-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px var(--accent-glow);
+    box-shadow: 0 4px 14px var(--accent-glow);
+}
+
+/* ── Logout button ── */
+.admin-logout-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.5rem 1rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.admin-logout-btn:hover {
+    color: var(--status-error);
+    border-color: var(--status-error);
+    background: color-mix(in srgb, var(--status-error) 6%, transparent);
 }
 
 /* ── Main content ── */
@@ -90,19 +122,27 @@
 
 /* ── Form panel ── */
 .admin-form-panel {
-    animation: slideDown 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: slideDown 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes slideDown {
     from {
         opacity: 0;
-        transform: translateY(-12px);
+        transform: translateY(-10px);
     }
 
     to {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* ── Section divider ── */
+.admin-section-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0.25rem 0;
+    transition: background 0.3s ease;
 }
 
 /* ── List section ── */
@@ -124,20 +164,21 @@
     font-family: 'DM Serif Display', serif;
     font-size: 1.3rem;
     color: var(--text-primary);
-    transition: color 0.35s ease;
+    transition: color 0.3s ease;
 }
 
 .admin-list-hint {
-    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
     letter-spacing: 0.05em;
     color: var(--text-muted);
-    transition: color 0.35s ease;
+    transition: color 0.3s ease;
 }
 
 /* ── Responsive ── */
 @media (max-width: 600px) {
     .admin-topbar {
-        padding: 0.85rem 1.2rem;
+        padding: 0.8rem 1.2rem;
     }
 
     .admin-main {
@@ -147,48 +188,4 @@
     .admin-heading {
         font-size: 1.1rem;
     }
-}
-
-/* ─────────────────────────────────────────────────────────────────────────
-   APPEND these lines to the bottom of your existing Admin.css
-   Do NOT replace the file — just paste this block at the end.
-   ───────────────────────────────────────────────────────────────────────── */
-
-/* ── Topbar right group (Add + Logout buttons sit side by side) ── */
-.admin-topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-/* ── Logout button — ghost style, less prominent than Add Project ── */
-.admin-logout-btn {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.55rem 1rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem;
-    letter-spacing: 0.05em;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-}
-
-.admin-logout-btn:hover {
-    color: var(--status-error);
-    border-color: var(--status-error);
-    background: color-mix(in srgb, var(--status-error) 8%, transparent);
-}
-
-/* ─────────────────────────────────────────────────────────────────────────
-   APPEND to the bottom of client/src/pages/Admin.css
-   ───────────────────────────────────────────────────────────────────────── */
-
-/* ── Section divider (between Profile Settings and All Projects) ── */
-.admin-section-divider {
-    height: 1px;
-    background: var(--border);
-    margin: 0.5rem 0;
-    transition: background 0.35s ease;
 }
