@@ -44,6 +44,13 @@ app.use('/api/profile', profileRouter)
 const uploadRouter = require('./routes/upload')
 app.use('/api/upload', uploadRouter)
 
+app.get('/api/debug-env', (req, res) => {
+  res.json({
+    EMAIL_USER: process.env.EMAIL_USER ? 'SET' : 'MISSING',
+    EMAIL_PASS: process.env.EMAIL_PASS ? 'SET' : 'MISSING',
+  })
+})
+
 // ── 404 catch-all ─────────────────────────────────────────────────────────
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' })
