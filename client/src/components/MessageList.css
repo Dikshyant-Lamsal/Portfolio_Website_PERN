@@ -256,3 +256,29 @@
         order: -1;
     }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   APPEND to the bottom of client/src/components/MessageList.css
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Reply via Email button — accent ghost style, <a> tag */
+.ml-btn--reply {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    border-radius: 6px;
+    padding: 0.38rem 0.85rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.ml-btn--reply:hover {
+    background: var(--accent-glow);
+}

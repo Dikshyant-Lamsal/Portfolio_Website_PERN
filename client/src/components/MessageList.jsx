@@ -1,7 +1,6 @@
 // client/src/components/MessageList.jsx
-// Admin dashboard section — fetches and displays all contact form submissions.
-// Allows the admin to delete individual messages.
-// Uses the same auth pattern as ProjectForm and ProfileForm.
+// CHANGE: added Reply via Email button (mailto) to each MessageCard.
+// All fetch/delete logic unchanged.
 
 import { useState, useEffect, useCallback } from 'react'
 import API_URL from '../config/api'
@@ -9,10 +8,9 @@ import './MessageList.css'
 
 export default function MessageList() {
     const [messages, setMessages] = useState([])
-    const [status, setStatus] = useState('loading') // loading | ready | error
+    const [status, setStatus] = useState('loading')
     const [errorMsg, setErrorMsg] = useState('')
 
-    // ── Fetch all messages ────────────────────────────────────────────────
     const fetchMessages = useCallback(async () => {
         setStatus('loading')
         setErrorMsg('')
@@ -37,7 +35,6 @@ export default function MessageList() {
 
     useEffect(() => { fetchMessages() }, [fetchMessages])
 
-    // ── Delete a message ─────────────────────────────────────────────────
     const handleDelete = async (id) => {
         const token = localStorage.getItem('adminToken')
         try {
@@ -46,14 +43,12 @@ export default function MessageList() {
                 headers: { Authorization: `Bearer ${token}` },
             })
             if (!res.ok) throw new Error()
-            // Remove from local state — no need to re-fetch
             setMessages(prev => prev.filter(m => m.id !== id))
         } catch {
             alert('Failed to delete message. Please try again.')
         }
     }
 
-    // ── Render states ────────────────────────────────────────────────────
     if (status === 'loading') {
         return (
             <div className="ml-status">
@@ -105,24 +100,25 @@ function MessageCard({ msg, onDelete }) {
     const [confirming, setConfirming] = useState(false)
 
     const formattedDate = new Date(msg.created_at).toLocaleString('en-IN', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
+        day: '2-digit', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
     })
+
+    // Build the mailto href — subject pre-filled, body includes original message
+    const replySubject = encodeURIComponent(`Reply from Dikshyant Lamsal — Re: your message`)
+    const replyBody = encodeURIComponent(
+        `Hi ${msg.name},\n\nThank you for reaching out!\n\n` +
+        `---\nYour original message:\n"${msg.message}"\n---\n\n`
+    )
+    const replyHref = `mailto:${msg.email}?subject=${replySubject}&body=${replyBody}`
 
     return (
         <div className="ml-card">
-            {/* ── Sender info row ── */}
+            {/* ── Sender info ── */}
             <div className="ml-card-meta">
                 <div className="ml-sender">
                     <span className="ml-name">{msg.name}</span>
-                    <a
-                        href={`mailto:${msg.email}`}
-                        className="ml-email"
-                        title={`Email ${msg.name}`}
-                    >
+                    <a href={`mailto:${msg.email}`} className="ml-email" title={`Email ${msg.name}`}>
                         {msg.email}
                     </a>
                 </div>
@@ -134,27 +130,28 @@ function MessageCard({ msg, onDelete }) {
 
             {/* ── Actions ── */}
             <div className="ml-actions">
+                {/* Reply button — always visible */}
+                <a
+                    href={replyHref}
+                    className="ml-btn ml-btn--reply"
+                    aria-label={`Reply to ${msg.name}`}
+                >
+                    ↩ Reply via Email
+                </a>
+
+                {/* Delete flow */}
                 {confirming ? (
                     <>
                         <span className="ml-confirm-text">Delete this message?</span>
-                        <button
-                            className="ml-btn ml-btn--danger"
-                            onClick={() => onDelete(msg.id)}
-                        >
+                        <button className="ml-btn ml-btn--danger" onClick={() => onDelete(msg.id)}>
                             Yes, delete
                         </button>
-                        <button
-                            className="ml-btn ml-btn--ghost"
-                            onClick={() => setConfirming(false)}
-                        >
+                        <button className="ml-btn ml-btn--ghost" onClick={() => setConfirming(false)}>
                             Cancel
                         </button>
                     </>
                 ) : (
-                    <button
-                        className="ml-btn ml-btn--danger-outline"
-                        onClick={() => setConfirming(true)}
-                    >
+                    <button className="ml-btn ml-btn--danger-outline" onClick={() => setConfirming(true)}>
                         Delete
                     </button>
                 )}

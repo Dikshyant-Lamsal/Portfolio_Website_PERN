@@ -1,28 +1,22 @@
 // client/src/components/Navbar.jsx
-// Fixed navbar with glassmorphism on scroll, hamburger menu, and theme toggle.
-// Theme toggle is lifted here from App.jsx — receives `theme` and `toggleTheme` as props.
+// CHANGE: NAV_LINKS updated to include Education, Experience, Certifications.
+// All component logic unchanged.
 
 import { useState, useEffect } from 'react'
 import './Navbar.css'
 
 export default function Navbar({ theme, toggleTheme }) {
-    // ── Scroll state: adds blur/glass effect once user scrolls down ──
     const [scrolled, setScrolled] = useState(false)
-
-    // ── Mobile menu open/closed ──
     const [menuOpen, setMenuOpen] = useState(false)
 
-    // Listen for scroll to toggle the `scrolled` class on the navbar
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 50)
         window.addEventListener('scroll', handleScroll, { passive: true })
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
-    // Close mobile menu whenever a nav link is clicked
     const handleNavClick = () => setMenuOpen(false)
 
-    // Smooth scroll to a section by its id
     const scrollTo = (id) => {
         const el = document.getElementById(id)
         if (el) el.scrollIntoView({ behavior: 'smooth' })
@@ -33,7 +27,6 @@ export default function Navbar({ theme, toggleTheme }) {
         <header className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
             <div className="navbar-inner">
 
-                {/* ── Logo ── */}
                 <button
                     className="navbar-logo"
                     onClick={() => scrollTo('hero')}
@@ -44,7 +37,6 @@ export default function Navbar({ theme, toggleTheme }) {
                     <span className="logo-bracket">/&gt;</span>
                 </button>
 
-                {/* ── Desktop nav links ── */}
                 <nav className="navbar-links" aria-label="Primary navigation">
                     {NAV_LINKS.map(({ label, id }) => (
                         <button
@@ -57,10 +49,7 @@ export default function Navbar({ theme, toggleTheme }) {
                     ))}
                 </nav>
 
-                {/* ── Right side: theme toggle + hamburger ── */}
                 <div className="navbar-actions">
-
-                    {/* Theme toggle pill */}
                     <button
                         className="theme-toggle"
                         onClick={toggleTheme}
@@ -75,14 +64,12 @@ export default function Navbar({ theme, toggleTheme }) {
                         </span>
                     </button>
 
-                    {/* Hamburger — visible on mobile only */}
                     <button
                         className={`hamburger ${menuOpen ? 'hamburger--open' : ''}`}
                         onClick={() => setMenuOpen(prev => !prev)}
                         aria-label="Toggle mobile menu"
                         aria-expanded={menuOpen}
                     >
-                        {/* Three bars that animate into an X */}
                         <span className="bar" />
                         <span className="bar" />
                         <span className="bar" />
@@ -90,7 +77,6 @@ export default function Navbar({ theme, toggleTheme }) {
                 </div>
             </div>
 
-            {/* ── Mobile dropdown menu ── */}
             <nav
                 className={`mobile-menu ${menuOpen ? 'mobile-menu--open' : ''}`}
                 aria-label="Mobile navigation"
@@ -109,10 +95,13 @@ export default function Navbar({ theme, toggleTheme }) {
     )
 }
 
-// ── Nav link definitions — add/remove sections here as the project grows ──
+// ── Nav links — matches homepage section order in App.jsx ──────────────────
 const NAV_LINKS = [
     { label: 'About', id: 'about' },
+    { label: 'Education', id: 'education' },
+    { label: 'Experience', id: 'experience' },
     { label: 'Skills', id: 'skills' },
     { label: 'Projects', id: 'projects' },
+    { label: 'Certifications', id: 'certifications' },
     { label: 'Contact', id: 'contact' },
 ]

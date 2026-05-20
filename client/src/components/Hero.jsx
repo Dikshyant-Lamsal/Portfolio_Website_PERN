@@ -1,11 +1,5 @@
 // client/src/components/Hero.jsx
-// Full-viewport hero section with animated entrance, CTA buttons, social links.
-//
-// CHANGES FROM ORIGINAL:
-//   • Imports useProfile hook
-//   • All hardcoded strings replaced with profile data
-//   • Fallback values shown while loading so layout never breaks
-//   • SVG icons unchanged — only the href/text values are now dynamic
+// CHANGE: added Resume button to CTA row — reads resume_url from profile DB
 
 import useProfile from '../hooks/useProfile'
 import './Hero.css'
@@ -13,43 +7,36 @@ import './Hero.css'
 export default function Hero() {
     const { profile, loading } = useProfile()
 
-    // Smooth scroll helper — scrolls to a section by its id
     const scrollTo = (id) => {
         const el = document.getElementById(id)
         if (el) el.scrollIntoView({ behavior: 'smooth' })
     }
 
-    // ── Derive display values ─────────────────────────────────────────────
-    // While loading, fall back to empty strings or neutral placeholders
-    // so the layout doesn't collapse or flash wrong content.
     const fullName = profile?.full_name || ''
     const roleTitle = profile?.role_title || ''
     const heroBio = profile?.hero_subtitle || ''
     const githubUrl = profile?.github_url || '#'
     const linkedinUrl = profile?.linkedin_url || '#'
     const email = profile?.email || '#'
+    const resumeUrl = profile?.resume_url || ''   // ── NEW ──
 
     return (
         <section className="hero" id="hero" aria-label="Introduction">
 
-            {/* ── Decorative background blobs ── */}
             <div className="hero-blob hero-blob--1" aria-hidden="true" />
             <div className="hero-blob hero-blob--2" aria-hidden="true" />
 
             <div className="hero-content">
 
-                {/* ── Eyebrow label ── */}
                 <p className="hero-eyebrow">
                     <span className="eyebrow-line" aria-hidden="true" />
                     Hello, I'm
                 </p>
 
-                {/* ── Name ── */}
                 <h1 className="hero-name">
                     {loading ? <span className="hero-placeholder" aria-hidden="true" /> : fullName}
                 </h1>
 
-                {/* ── Role / title ── */}
                 <h2 className="hero-role">
                     {loading
                         ? <span className="hero-placeholder hero-placeholder--sm" aria-hidden="true" />
@@ -57,7 +44,6 @@ export default function Hero() {
                     }
                 </h2>
 
-                {/* ── Short bio ── */}
                 <p className="hero-bio">
                     {loading
                         ? <span className="hero-placeholder hero-placeholder--bio" aria-hidden="true" />
@@ -65,7 +51,7 @@ export default function Hero() {
                     }
                 </p>
 
-                {/* ── CTA buttons — unchanged ── */}
+                {/* ── CTA buttons ── */}
                 <div className="hero-cta">
                     <button
                         className="cta-btn cta-btn--primary"
@@ -81,18 +67,27 @@ export default function Hero() {
                     >
                         Contact Me
                     </button>
-                </div>
 
-                {/* ── Social links — hrefs now dynamic ── */}
-                <div className="hero-socials">
-                    {githubUrl && githubUrl !== '#' && (
+                    {/* ── Resume button — only shown when URL is set in profile ── */}
+                    {resumeUrl && (
                         <a
-                            href={githubUrl}
+                            href={resumeUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="social-link"
-                            aria-label="GitHub"
+                            className="cta-btn cta-btn--resume"
+                            aria-label="Download resume"
                         >
+                            Resume
+                            <span className="cta-arrow" aria-hidden="true">↓</span>
+                        </a>
+                    )}
+                </div>
+
+                {/* ── Social links ── */}
+                <div className="hero-socials">
+                    {githubUrl && githubUrl !== '#' && (
+                        <a href={githubUrl} target="_blank" rel="noopener noreferrer"
+                            className="social-link" aria-label="GitHub">
                             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577
                 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755
@@ -110,13 +105,8 @@ export default function Hero() {
                     )}
 
                     {linkedinUrl && linkedinUrl !== '#' && (
-                        <a
-                            href={linkedinUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="social-link"
-                            aria-label="LinkedIn"
-                        >
+                        <a href={linkedinUrl} target="_blank" rel="noopener noreferrer"
+                            className="social-link" aria-label="LinkedIn">
                             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853
                 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9
@@ -131,11 +121,7 @@ export default function Hero() {
                     )}
 
                     {email && email !== '#' && (
-                        <a
-                            href={`mailto:${email}`}
-                            className="social-link"
-                            aria-label="Email"
-                        >
+                        <a href={`mailto:${email}`} className="social-link" aria-label="Email">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                                 aria-hidden="true">
@@ -149,7 +135,6 @@ export default function Hero() {
 
             </div>
 
-            {/* ── Scroll indicator ── */}
             <div className="scroll-indicator" aria-hidden="true">
                 <span className="scroll-dot" />
             </div>
@@ -157,4 +142,3 @@ export default function Hero() {
         </section>
     )
 }
-

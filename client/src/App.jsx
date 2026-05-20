@@ -1,19 +1,24 @@
 // client/src/App.jsx
-// CHANGE FROM PREVIOUS: default theme is now 'light' instead of 'dark'.
-// All other logic (auth, routing, hash handling) is identical.
+// CHANGES FROM PREVIOUS:
+//   • Imports Education, Experience, Certifications
+//   • Inserts them in homepage flow:
+//     Hero → About → Education → Experience → Skills → Projects → Certifications → Contact
 
 import { useState, useEffect } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
+import Education from './components/Education'       // ── NEW ──
+import Experience from './components/Experience'      // ── NEW ──
 import Skills from './components/Skills'
 import Projects from './components/Projects'
+import Certifications from './components/Certifications'  // ── NEW ──
 import Contact from './components/Contact'
 import Admin from './pages/Admin'
 import Login from './pages/Login'
 
 export default function App() {
-  // ── Theme — default changed to 'light' ────────────────────────────────
+  // ── Theme ─────────────────────────────────────────────────────────────
   const [theme, setTheme] = useState('light')
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -21,7 +26,7 @@ export default function App() {
   const toggleTheme = () =>
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
 
-  // ── Auth state ─────────────────────────────────────────────────────────
+  // ── Auth ──────────────────────────────────────────────────────────────
   const [isLoggedIn, setIsLoggedIn] = useState(
     () => Boolean(localStorage.getItem('adminToken'))
   )
@@ -32,7 +37,7 @@ export default function App() {
     window.location.hash = ''
   }
 
-  // ── Hash routing ───────────────────────────────────────────────────────
+  // ── Hash routing ──────────────────────────────────────────────────────
   const [hash, setHash] = useState(window.location.hash)
   useEffect(() => {
     const onHashChange = () => setHash(window.location.hash)
@@ -53,16 +58,20 @@ export default function App() {
     return <Admin onGoHome={goHome} onLogout={handleLogout} />
   }
 
+  // ── Portfolio view ────────────────────────────────────────────────────
   return (
     <>
       <Navbar theme={theme} toggleTheme={toggleTheme} />
       <main>
         <Hero />
         <About />
+        <Education />
+        <Experience />
         <Skills />
         <section id="projects" className="section-wrapper">
           <Projects />
         </section>
+        <Certifications />
         <Contact />
       </main>
       <footer className="footer">

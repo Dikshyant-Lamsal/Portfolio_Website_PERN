@@ -1,19 +1,16 @@
 // server/routes/contact.js
-// Handles contact form submissions and admin message management.
-// Mounted in server.js at /api/contact
-//
-// POST   /api/contact       — public  — submit contact form
-// GET    /api/contact       — protected — admin fetches all messages
-// DELETE /api/contact/:id   — protected — admin deletes a message
+// CHANGE: POST handler now calls sendContactNotification after DB insert.
+// If email fails, the insert still succeeds and 201 is still returned.
 
 const express = require('express')
 const router = express.Router()
 const pool = require('../config/db')
 const verifyToken = require('../middleware/auth')
+const { sendContactNotification } = require('../utils/sendMail')  // ── NEW ──
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /api/contact — PUBLIC
-// Validates and inserts a new contact message.
+// Validates, inserts, then fires email notification (non-blocking).
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/', async (req, res) => {
     try {
@@ -33,16 +30,29 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: 'Please provide a valid email address' })
         }
 
+        // ── Insert into PostgreSQL ────────────────────────────────────────
         const result = await pool.query(
             `INSERT INTO contacts (name, email, message)
-       VALUES ($1, $2, $3)
-       RETURNING id, name, email, created_at`,
+             VALUES ($1, $2, $3)
+             RETURNING id, name, email, message, created_at`,
             [name.trim(), email.trim().toLowerCase(), message.trim()]
         )
 
+        const contact = result.rows[0]
+
+        // ── Fire email notification — intentionally not awaited inline ──
+        // sendContactNotification swallows its own errors, so this is safe.
+        sendContactNotification(contact)
+
+        // ── Respond immediately — don't wait for email ────────────────────
         res.status(201).json({
             message: 'Message received! I will get back to you soon.',
-            contact: result.rows[0],
+            contact: {
+                id: contact.id,
+                name: contact.name,
+                email: contact.email,
+                created_at: contact.created_at,
+            },
         })
     } catch (err) {
         console.error('POST /api/contact error:', err.message)
@@ -52,7 +62,7 @@ router.post('/', async (req, res) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /api/contact — PROTECTED
-// Returns all contact messages, newest first.
+// Returns all messages newest-first.
 // ─────────────────────────────────────────────────────────────────────────────
 router.get('/', verifyToken, async (req, res) => {
     try {
@@ -68,21 +78,17 @@ router.get('/', verifyToken, async (req, res) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DELETE /api/contact/:id — PROTECTED
-// Permanently removes a contact message by id.
 // ─────────────────────────────────────────────────────────────────────────────
 router.delete('/:id', verifyToken, async (req, res) => {
     try {
         const { id } = req.params
-
         const result = await pool.query(
             'DELETE FROM contacts WHERE id = $1 RETURNING id',
             [id]
         )
-
         if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Message not found' })
         }
-
         res.json({ message: `Contact message ${id} deleted` })
     } catch (err) {
         console.error('DELETE /api/contact/:id error:', err.message)
