@@ -123,8 +123,12 @@ async function sendContactNotification(contact) {
         await transporter.sendMail(mailOptions)
         console.log(`✅ Contact notification sent for: ${contact.email}`)
     } catch (err) {
-        // Log but do NOT re-throw — DB insert already succeeded
-        console.error('❌ sendMail error (notification not sent):', err.message)
+        console.error('❌ sendMail error:', err.message)
+        console.error('❌ sendMail full error:', JSON.stringify({
+            code: err.code,
+            command: err.command,
+            response: err.response,
+        }))
     }
 }
 
