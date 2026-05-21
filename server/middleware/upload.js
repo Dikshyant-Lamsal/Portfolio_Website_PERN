@@ -1,49 +1,60 @@
 // server/middleware/upload.js
-// ─────────────────────────────────────────────────────────────────────────────
-// Multer middleware configured to stream uploads directly to Cloudinary.
-// No files are ever written to the local filesystem.
-//
-// multer-storage-cloudinary connects multer and the Cloudinary SDK so the
-// file goes:  browser → Express (memory) → Cloudinary  in one step.
-// ─────────────────────────────────────────────────────────────────────────────
+// FIX: added type: 'upload' and access_mode: 'public' to resumeStorage
+// so Cloudinary serves the PDF publicly without requiring authentication.
 
 const multer = require('multer')
 const { CloudinaryStorage } = require('multer-storage-cloudinary')
 const cloudinary = require('../config/cloudinary')
 
-// ── Configure Cloudinary as the multer storage engine ────────────────────────
-const storage = new CloudinaryStorage({
+// ── Image upload — unchanged ──────────────────────────────────────────────
+const imageStorage = new CloudinaryStorage({
     cloudinary,
     params: {
-        // All project images land in this folder inside your Cloudinary account
         folder: 'portfolio/projects',
-
-        // Allow jpg, png, webp, gif — Cloudinary will reject anything else
         allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
-
-        // Cloudinary will auto-generate a unique public_id, so filenames
-        // won't collide even if two admins upload "screenshot.png" at the same time.
-        // The transformation here is optional — it constrains images to a sensible
-        // max width so you're not storing 8000px originals.
         transformation: [{ width: 1200, crop: 'limit' }],
     },
 })
 
-// ── Build the multer instance ─────────────────────────────────────────────────
 const upload = multer({
-    storage,
-    limits: {
-        fileSize: 5 * 1024 * 1024,  // 5 MB max — reject larger files early
-    },
+    storage: imageStorage,
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: (_req, file, cb) => {
-        // Double-check MIME type on the server side (browser can lie about extension)
         const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
-        if (allowed.includes(file.mimetype)) {
-            cb(null, true)   // accept
-        } else {
-            cb(new Error('Only image files are allowed (jpg, png, webp, gif)'), false)
+        allowed.includes(file.mimetype)
+            ? cb(null, true)
+            : cb(new Error('Only image files are allowed (jpg, png, webp, gif)'), false)
+    },
+})
+
+// ── PDF resume upload ─────────────────────────────────────────────────────
+const resumeStorage = new CloudinaryStorage({
+    cloudinary,
+    params: async (_req, file) => {
+        const originalName = file.originalname
+            .replace(/\.pdf$/i, '')
+            .replace(/[^a-zA-Z0-9_-]/g, '_')
+            .toLowerCase()
+
+        return {
+            folder: 'portfolio/resumes',
+            resource_type: 'raw',
+            type: 'upload',        // ← ensures public upload (not authenticated)
+            access_mode: 'public',        // ← explicitly marks asset as publicly accessible
+            format: 'pdf',
+            public_id: `${originalName}_${Date.now()}`,
         }
     },
 })
 
-module.exports = upload
+const resumeUpload = multer({
+    storage: resumeStorage,
+    limits: { fileSize: 10 * 1024 * 1024 },
+    fileFilter: (_req, file, cb) => {
+        file.mimetype === 'application/pdf'
+            ? cb(null, true)
+            : cb(new Error('Only PDF files are allowed for resume upload'), false)
+    },
+})
+
+module.exports = { upload, resumeUpload }

@@ -1,15 +1,13 @@
 // client/src/pages/Admin.jsx
-//
-// CHANGES FROM PREVIOUS VERSION:
-//   • Imports MessageList
-//   • Adds a second admin-section-divider + MessageList below ProjectList
-//   • Everything else — state, topbar, ProfileForm, ProjectForm, ProjectList — unchanged
+// CHANGE: imports ChangePasswordForm, renders it below ProfileForm.
+// All other logic unchanged.
 
 import { useState } from 'react'
 import ProjectForm from '../components/ProjectForm'
 import ProjectList from '../components/ProjectList'
 import ProfileForm from '../components/ProfileForm'
-import MessageList from '../components/MessageList'   // ── NEW ──
+import MessageList from '../components/MessageList'
+import ChangePasswordForm from '../components/ChangePasswordForm'  // ── NEW ──
 import './Admin.css'
 
 export default function Admin({ onGoHome, onLogout }) {
@@ -20,16 +18,10 @@ export default function Admin({ onGoHome, onLogout }) {
     const openCreate = () => { setEditingProject(null); setFormOpen(true) }
     const openEdit = (project) => { setEditingProject(project); setFormOpen(true) }
     const closeForm = () => { setFormOpen(false); setEditingProject(null) }
-
-    const handleFormSuccess = () => {
-        closeForm()
-        setRefreshKey(prev => prev + 1)
-    }
+    const handleFormSuccess = () => { closeForm(); setRefreshKey(prev => prev + 1) }
 
     return (
         <div className="admin-shell">
-
-            {/* ── Top bar ── */}
             <header className="admin-topbar">
                 <div className="admin-topbar-left">
                     <button className="admin-back" onClick={onGoHome} aria-label="Back to portfolio">
@@ -53,12 +45,15 @@ export default function Admin({ onGoHome, onLogout }) {
 
             <main className="admin-main">
 
-                {/* ── Profile Settings ── */}
                 <ProfileForm />
 
                 <div className="admin-section-divider" aria-hidden="true" />
 
-                {/* ── Project form (shown when open) ── */}
+                {/* ── NEW: Password change ── */}
+                <ChangePasswordForm />
+
+                <div className="admin-section-divider" aria-hidden="true" />
+
                 {formOpen && (
                     <div className="admin-form-panel">
                         <ProjectForm
@@ -69,7 +64,6 @@ export default function Admin({ onGoHome, onLogout }) {
                     </div>
                 )}
 
-                {/* ── All Projects ── */}
                 <section className="admin-list-section">
                     <div className="admin-list-header">
                         <h2 className="admin-list-title">All Projects</h2>
@@ -80,9 +74,8 @@ export default function Admin({ onGoHome, onLogout }) {
                     <ProjectList refreshKey={refreshKey} onEdit={openEdit} />
                 </section>
 
-                <div className="admin-section-divider" aria-hidden="true" />  {/* ── NEW ── */}
+                <div className="admin-section-divider" aria-hidden="true" />
 
-                {/* ── Contact Messages ── NEW ── */}
                 <section className="admin-list-section">
                     <MessageList />
                 </section>

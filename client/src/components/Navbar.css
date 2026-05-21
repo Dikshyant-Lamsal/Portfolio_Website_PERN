@@ -266,3 +266,24 @@
         display: none;
     }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   APPEND to the bottom of client/src/components/Navbar.css
+   Scroll spy active state styles
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Active desktop nav link */
+.nav-link--active {
+    color: var(--accent);
+    background: var(--accent-glow);
+}
+
+.nav-link--active::after {
+    width: 55%;
+}
+
+/* Active mobile link */
+.mobile-link--active {
+    color: var(--accent);
+    background: var(--accent-glow);
+}

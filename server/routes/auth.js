@@ -1,83 +1,81 @@
 // server/routes/auth.js
-// ─────────────────────────────────────────────────────────────────────────────
-// Authentication routes.
-// Currently: one endpoint only — POST /api/auth/login
-//
-// Mounted in server.js at /api/auth  (you'll add one line there in a moment)
-// ─────────────────────────────────────────────────────────────────────────────
+// CHANGE: added PUT /api/auth/change-password (JWT protected).
+// POST /api/auth/login is unchanged.
 
 const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const pool = require('../config/db')
+const verifyToken = require('../middleware/auth')
 
 // ─────────────────────────────────────────────────────────────────────────────
-// POST /api/auth/login
-//
-// Body:   { username: string, password: string }
-// Success 200: { token: "<JWT>" }
-// Failure 401: { error: "Invalid credentials" }
-//
-// The client should store the returned token in localStorage under the key
-// "adminToken". The frontend will check for this token before showing the
-// Admin dashboard (that's a later step).
+// POST /api/auth/login — unchanged
 // ─────────────────────────────────────────────────────────────────────────────
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body
-
-        // ── Basic input guard ────────────────────────────────────────────────────
-        // Return early if either field is missing — this also prevents a DB lookup
-        // with undefined values.
-        if (!username || !password) {
+        if (!username || !password)
             return res.status(400).json({ error: 'username and password are required' })
-        }
 
-        // ── Look up the admin by username ────────────────────────────────────────
-        // Only one admin row exists, but we still query by username so the code
-        // would naturally extend if you ever needed multiple admins.
-        const result = await pool.query(
-            'SELECT * FROM admins WHERE username = $1',
-            [username]
-        )
-
+        const result = await pool.query('SELECT * FROM admins WHERE username = $1', [username])
         const admin = result.rows[0]
+        if (!admin) return res.status(401).json({ error: 'Invalid credentials' })
 
-        // ── Constant-time check: user not found ──────────────────────────────────
-        // Using the SAME error message for "user not found" and "wrong password"
-        // prevents an attacker from enumerating valid usernames via different
-        // error responses.
-        if (!admin) {
-            return res.status(401).json({ error: 'Invalid credentials' })
-        }
-
-        // ── Compare the submitted password against the stored bcrypt hash ─────────
-        // bcrypt.compare() is timing-safe — it won't short-circuit on mismatch.
         const passwordMatch = await bcrypt.compare(password, admin.password)
+        if (!passwordMatch) return res.status(401).json({ error: 'Invalid credentials' })
 
-        if (!passwordMatch) {
-            return res.status(401).json({ error: 'Invalid credentials' })
-        }
-
-        // ── Sign a JWT ────────────────────────────────────────────────────────────
-        // Payload: minimal — just the admin's id and username.
-        // The token expires in 8 hours. Adjust to taste (e.g. '1d', '2h').
-        // JWT_SECRET must be set in server/.env — see instructions below.
         const token = jwt.sign(
-            { id: admin.id, username: admin.username },  // payload (public-ish)
-            process.env.JWT_SECRET,                       // secret (keep private!)
-            { expiresIn: '8h' }
+            { id: admin.id, username: admin.username },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
         )
-
-        // ── Return the token ──────────────────────────────────────────────────────
-        // The frontend will store this in localStorage and attach it to future
-        // requests via an Authorization header (wired up in Step 3).
         res.json({ token })
-
     } catch (err) {
         console.error('POST /api/auth/login error:', err.message)
         res.status(500).json({ error: 'Login failed' })
+    }
+})
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PUT /api/auth/change-password — PROTECTED
+//
+// Body: { currentPassword, newPassword, confirmPassword }
+// Validates current password, then replaces with bcrypt hash of new password.
+// ─────────────────────────────────────────────────────────────────────────────
+router.put('/change-password', verifyToken, async (req, res) => {
+    try {
+        const { currentPassword, newPassword, confirmPassword } = req.body
+
+        // ── Input validation ──────────────────────────────────────────────
+        if (!currentPassword || !newPassword || !confirmPassword)
+            return res.status(400).json({ error: 'All three password fields are required' })
+
+        if (newPassword.length < 8)
+            return res.status(400).json({ error: 'New password must be at least 8 characters' })
+
+        if (newPassword !== confirmPassword)
+            return res.status(400).json({ error: 'New password and confirmation do not match' })
+
+        // ── Fetch admin row ───────────────────────────────────────────────
+        // req.admin.id is set by verifyToken after decoding the JWT
+        const result = await pool.query('SELECT * FROM admins WHERE id = $1', [req.admin.id])
+        const admin = result.rows[0]
+        if (!admin) return res.status(404).json({ error: 'Admin not found' })
+
+        // ── Verify current password ───────────────────────────────────────
+        const currentMatch = await bcrypt.compare(currentPassword, admin.password)
+        if (!currentMatch)
+            return res.status(401).json({ error: 'Current password is incorrect' })
+
+        // ── Hash and save new password ────────────────────────────────────
+        const newHash = await bcrypt.hash(newPassword, 12)
+        await pool.query('UPDATE admins SET password = $1 WHERE id = $2', [newHash, admin.id])
+
+        res.json({ message: 'Password changed successfully' })
+    } catch (err) {
+        console.error('PUT /api/auth/change-password error:', err.message)
+        res.status(500).json({ error: 'Failed to change password' })
     }
 })
 

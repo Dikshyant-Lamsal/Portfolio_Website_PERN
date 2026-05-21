@@ -356,3 +356,99 @@
     font-size: 0.78rem;
     color: var(--text-muted);
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   APPEND to the bottom of client/src/components/ProfileForm.css
+   Resume PDF upload UI styles
+   ───────────────────────────────────────────────────────────────────────── */
+
+.prf-resume-upload {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.prf-upload-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+/* Hidden native file input */
+.prf-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+
+.prf-file-label {
+    position: relative;
+    cursor: pointer;
+}
+
+.prf-file-btn {
+    display: inline-block;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.48rem 0.9rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.prf-file-label:hover .prf-file-btn {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-glow);
+}
+
+.prf-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 0.48rem 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.prf-upload-btn:hover:not(:disabled) {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+
+.prf-upload-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.prf-upload-success {
+    font-size: 0.76rem;
+    color: var(--status-ok);
+}
+
+.prf-upload-error {
+    font-size: 0.76rem;
+    color: var(--status-error);
+}
+
+.prf-upload-hint {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin: 0;
+}

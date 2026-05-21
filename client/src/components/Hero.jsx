@@ -1,8 +1,26 @@
 // client/src/components/Hero.jsx
-// CHANGE: added Resume button to CTA row — reads resume_url from profile DB
+// FIX: Resume button now forces a proper download with correct filename.
+// Appends fl_attachment to the Cloudinary URL so the browser downloads
+// it as "Dikshyant_Lamsal_Resume.pdf" instead of a random extensionless file.
 
 import useProfile from '../hooks/useProfile'
 import './Hero.css'
+
+// ── Append Cloudinary's fl_attachment flag to force a named download ──────
+// Works for both Cloudinary raw URLs and plain Google Drive / other URLs.
+function toDownloadUrl(url) {
+    if (!url) return url
+    try {
+        // Cloudinary raw URLs: insert fl_attachment in the transformation segment
+        if (url.includes('res.cloudinary.com') && url.includes('/raw/upload/')) {
+            return url.replace('/raw/upload/', '/raw/upload/fl_attachment/')
+        }
+        // For any other URL just return as-is (Drive links open in browser anyway)
+        return url
+    } catch {
+        return url
+    }
+}
 
 export default function Hero() {
     const { profile, loading } = useProfile()
@@ -18,7 +36,10 @@ export default function Hero() {
     const githubUrl = profile?.github_url || '#'
     const linkedinUrl = profile?.linkedin_url || '#'
     const email = profile?.email || '#'
-    const resumeUrl = profile?.resume_url || ''   // ── NEW ──
+    const resumeUrl = profile?.resume_url || ''
+
+    // Convert to a download-friendly URL
+    const resumeDownloadUrl = toDownloadUrl(resumeUrl)
 
     return (
         <section className="hero" id="hero" aria-label="Introduction">
@@ -40,40 +61,32 @@ export default function Hero() {
                 <h2 className="hero-role">
                     {loading
                         ? <span className="hero-placeholder hero-placeholder--sm" aria-hidden="true" />
-                        : roleTitle
-                    }
+                        : roleTitle}
                 </h2>
 
                 <p className="hero-bio">
                     {loading
                         ? <span className="hero-placeholder hero-placeholder--bio" aria-hidden="true" />
-                        : heroBio
-                    }
+                        : heroBio}
                 </p>
 
-                {/* ── CTA buttons ── */}
                 <div className="hero-cta">
-                    <button
-                        className="cta-btn cta-btn--primary"
-                        onClick={() => scrollTo('projects')}
-                    >
+                    <button className="cta-btn cta-btn--primary" onClick={() => scrollTo('projects')}>
                         View Projects
                         <span className="cta-arrow" aria-hidden="true">→</span>
                     </button>
 
-                    <button
-                        className="cta-btn cta-btn--secondary"
-                        onClick={() => scrollTo('contact')}
-                    >
+                    <button className="cta-btn cta-btn--secondary" onClick={() => scrollTo('contact')}>
                         Contact Me
                     </button>
 
-                    {/* ── Resume button — only shown when URL is set in profile ── */}
+                    {/* Resume button — only shown when URL is set */}
                     {resumeUrl && (
                         <a
-                            href={resumeUrl}
+                            href={resumeDownloadUrl}
                             target="_blank"
                             rel="noopener noreferrer"
+                            download="Dikshyant_Lamsal_Resume.pdf"
                             className="cta-btn cta-btn--resume"
                             aria-label="Download resume"
                         >
@@ -83,7 +96,6 @@ export default function Hero() {
                     )}
                 </div>
 
-                {/* ── Social links ── */}
                 <div className="hero-socials">
                     {githubUrl && githubUrl !== '#' && (
                         <a href={githubUrl} target="_blank" rel="noopener noreferrer"
