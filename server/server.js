@@ -17,6 +17,8 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'https://portfolio-website-pern.vercel.app',
+    'https://dikshyantlamsal.com.np',
+    'https://www.dikshyantlamsal.com.np',
   ],
   credentials: true,
 }))
